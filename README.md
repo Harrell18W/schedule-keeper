@@ -8,8 +8,11 @@ Uses:
   * toml
 
 Files:
+* docs/: documentation
 * src/SpreadsheetHandler.py: interfaces with spreadsheets containing employee hours
 * test-docs/: files to aid with testing
+
+![alt-text](https://raw.githubusercontent.com/prophetofxenu/schedule-keeper/master/docs/flow-diagram.png "Flow Diagram")
 
 Process of communicator (no GUI, runs indefinitely):
 1. Communicate with employees
