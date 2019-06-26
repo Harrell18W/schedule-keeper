@@ -4,7 +4,7 @@ System to keep track of employee hours and store them in an Excel file
 Uses:
 * MongoDB (or different database application)
 * Node.js
-  * mongodb for interacting with database
+  * mongodb and mongoose for interacting with database
   * email/slack/twilio for communicating with employees
 * Python 3
   * PyQt5 for GUI
