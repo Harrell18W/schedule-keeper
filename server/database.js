@@ -1,5 +1,7 @@
 const mysql = require('mysql');
 
+const queries = require('./queries');
+
 // Login to MySQL db
 var mysqlConnection = mysql.createConnection({
     host: 'localhost',
@@ -16,63 +18,9 @@ mysqlConnection.connect(function(err) {
     console.log('Connected to MySQL server');
 });
 
-var table_check = async function() {
-    checks =
-    [
-        '\
-        CREATE TABLE IF NOT EXISTS Customers (\
-            name VARCHAR(255) NOT NULL,\
-            customShorthands JSON NOT NULL,\
-            id CHAR(32) NOT NULL\
-        )',
-        
-        '\
-        CREATE TABLE IF NOT EXISTS Employees (\
-            firstName VARCHAR(255) NOT NULL,\
-            lastName VARCHAR(255) NOT NULL,\
-            email VARCHAR(255),\
-            phone INT,\
-            slackUserId CHAR(9) NOT NULL,\
-            id CHAR(32) NOT NULL\
-        )',
+module.exports.tableCheck = async function() {
 
-        '\
-        CREATE TABLE IF NOT EXISTS ActiveClocks (\
-            employeeId CHAR(32) NOT NULL,\
-            customerId CHAR(32) NOT NULL,\
-            start DATETIME NOT NULL,\
-            id CHAR(32) NOT NULL\
-        )',
-
-        '\
-        CREATE TABLE IF NOT EXISTS FinishedClocks (\
-            employeeId CHAR(32) NOT NULL,\
-            customerId CHAR(32) NOT NULL,\
-            start DATETIME NOT NULL,\
-            end DATETIME NOT NULL,\
-            id CHAR(32) NOT NULL\
-        )',
-
-        '\
-        CREATE TABLE IF NOT EXISTS HandledClocks (\
-            employeeId CHAR(32) NOT NULL,\
-            customerId CHAR(32) NOT NULL,\
-            start DATETIME NOT NULL,\
-            end DATETIME NOT NULL,\
-            handledOn DATETIME NOT NULL,\
-            id CHAR(32) NOT NULL\
-        )',
-
-        '\
-        CREATE TABLE IF NOT EXISTS SlackResponses (\
-            employeeId CHAR(32) NOT NULL,\
-            received DATETIME NOT NULL,\
-            start DATETIME NOT NULL,\
-            id CHAR(32) NOT NULL\
-        )'
-    ];
-
-    for (var query of checks) {
+    for (var query of queries.checks) {
         await mysqlConnection.query(query, function(err, results, fields) {
             if (err) console.error(err);
             console.log(results);
@@ -80,5 +28,3 @@ var table_check = async function() {
     }
 
 }
-
-table_check();

@@ -1,5 +1,5 @@
 const { App } = require('@slack/bolt');
-const mysql = require('mysql');
+const db = require('./database');
 
 const Responses = require('./responses');
 
