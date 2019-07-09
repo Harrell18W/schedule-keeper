@@ -1,4 +1,5 @@
 const { App } = require('@slack/bolt');
+const mysql = require('mysql');
 
 const Responses = require('./responses');
 
@@ -8,7 +9,7 @@ const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
-app.command('/clockin', Responses.clock_in_response);
+app.command('/clockin', Responses.clockinResponse);
 
 async function slack_start() {
     await app.start(process.env.PORT || 3500);
