@@ -1,3 +1,4 @@
+//TODO redo styling across project
 const { App } = require('@slack/bolt');
 const db = require('./database');
 
@@ -11,10 +12,12 @@ const app = new App({
 
 app.command('/clockin', Responses.clockinResponse);
 
+app.action(/^request_[0-9a-z]{32}$/, Responses.clockinRequestResponse);
+
 async function slack_start() {
     await app.start(process.env.PORT || 3500);
 
-    console.log('Slack client connected');
+    console.log('Slack client started');
 }
 
 slack_start();

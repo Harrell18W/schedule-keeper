@@ -1,4 +1,34 @@
-const Employee = require('./models/employee');
+module.exports.createActiveClock = function(employeeId, customerId, start, id) {
+    return `INSERT INTO ActiveClocks ` +
+           `(employeeId, customerId, start, id) ` +
+           `VALUES ` +
+           `("${employeeId}", "${customerId}", "${start}", "${id}");`;
+}
+
+module.exports.getCustomerIdFromName = function(name) {
+    return `SELECT id FROM Customers WHERE name = "${name}";`;
+}
+
+module.exports.getEmployeeId = function(slackUserId) {
+    return `SELECT id FROM Employees WHERE slackUserId = "${slackUserId}";`;
+}
+
+module.exports.getCustomerNames = 'SELECT * FROM Customers;';
+
+module.exports.createResponse = function(employeeId, received, start, id) {
+    return `INSERT INTO SlackResponses ` +
+           `(employeeId, received, start, id) ` +
+           `VALUES ` +
+           `("${employeeId}", "${received}", "${start}", "${id}");`;
+}
+
+module.exports.getResponse = function(id) {
+    return `SELECT * FROM SlackResponses WHERE id = "${id}";`;
+}
+
+module.exports.deleteResponse = function(id) {
+    return `DELETE FROM SlackResponses WHERE id = "${id}";`;
+}
 
 module.exports.checks = 
 [
