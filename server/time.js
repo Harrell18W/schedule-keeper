@@ -24,6 +24,8 @@ module.exports.sqlDatetime = function(date) {
 }
 
 module.exports.timeParameter = function(timeArg) {
+    timeArg = timeArg.toLowerCase();
+
     if (/^\d{3}([ap]m?)?$/i.test(timeArg)) {
         var digits = timeArg.substring(0, 3);
         var hour = Number(digits.substring(0, 1));
@@ -40,6 +42,8 @@ module.exports.timeParameter = function(timeArg) {
         var hour = Number(digits.substring(0, 1));
         hour += timeArg.includes('p') ? 12 : 0;
         var minute = Number(digits.substring(2));
+        console.log(hour);
+        console.log(minute);
     } else if (/^\d{2}:\d{2}([ap]m?)?$/i.test(timeArg)) {
         var digits = timeArg.substring(0, 5);
         var hour = Number(digits.substring(0, 2));

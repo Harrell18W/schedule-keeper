@@ -18,25 +18,26 @@ function argParser(args) {
 module.exports.clockinResponse = async function ({ command, ack, say }) {
     ack();
 
-    //TODO fix time options
     //TODO check if employee is already clocked out
 
     var args = argParser(command.text);
-    if (args.length === 0) {
-        //TODO if no args given use time message received
-        say('asdf');
-        return;
-    }
-
-    try {
-        var { hour, minute } = time.timeParameter(args[0]);
-    } catch (err) {
-        if (err instanceof errors.ValueError) {
-            say(`<@${command.user_id}> Unable to parse timestamp`);
-            return;
-        } else {
-            throw err;
+    if (args.length !== 0) {
+        try {
+            var { hour, minute } = time.timeParameter(args[0]);
+        } catch (err) {
+            if (err instanceof errors.ValueError) {
+                say(`<@${command.user_id}> Unable to parse timestamp`);
+                return;
+            } else {
+                throw err;
+            }
         }
+
+        var now = new Date();
+        var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+    } else {
+        var now = new Date();
+        var start = now;
     }
 
     try {
@@ -62,9 +63,6 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
 
     var responseBlocks = blocks.clockinBlocks(command.user_id, requestId, customers);
 
-    var now = new Date();
-    var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
-
     db.createResponse(employeeId, time.sqlDatetime(now), time.sqlDatetime(start), id);
 
     say({ blocks: responseBlocks });
@@ -74,21 +72,23 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
     ack();
 
     var args = argParser(command.text);
-    if (args.length === 0) {
-        //TODO if no args given use time message received
-        say('asdf');
-        return;
-    }
-
-    try {
-        var { hour, minute } = time.timeParameter(args[0]);
-    } catch (err) {
-        if (err instanceof errors.ValueError) {
-            say(`<@${command.user_id}> Unable to parse timestamp`);
-            return;
-        } else {
-            throw err;
+    if (args.length !== 0) {
+        try {
+            var { hour, minute } = time.timeParameter(args[0]);
+        } catch (err) {
+            if (err instanceof errors.ValueError) {
+                say(`<@${command.user_id}> Unable to parse timestamp`);
+                return;
+            } else {
+                throw err;
+            }
         }
+
+        var now = new Date();
+        var finished = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+    } else {
+        var now = new Date();
+        var finished = now;
     }
 
     try {
@@ -113,11 +113,12 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
         }
     }
 
-    var customerName = (await db.getCustomerFromId(activeClock.customerId)).name;
+    if (activeClock.start > finished) {
+        say(`<@${command.user_id}> The clockout time you've specified is before the time at which you started`);
+        return;
+    }
 
-    //TODO make sure end time is after start time
-    var now = new Date();
-    var finished = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+    var customerName = (await db.getCustomerFromId(activeClock.customerId)).name;
 
     db.createFinishedClock(employeeId, activeClock.customerId, time.sqlDatetime(activeClock.start), time.sqlDatetime(finished), activeClock.id);
     db.deleteActiveClock(activeClock.id);
