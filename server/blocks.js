@@ -1,3 +1,4 @@
+//TOOD add parsed timestamp
 module.exports.clockinBlocks = function(slackUserId, requestId, customers) {
 
     // Construct options for list of customers
@@ -49,6 +50,7 @@ module.exports.clockinReponseBlocks = function(customer, time) {
     ]
 }
 
+//TOOD add time in and time out
 module.exports.clockoutBlocks = function(customer, time) {
     return [
         {

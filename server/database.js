@@ -1,12 +1,8 @@
 //TODO prevent SQL injections
-//TODO consistent use of promisified query
 const mysql = require('mysql');
 const util = require('util');
 
 const errors = require('./errors');
-
-const Customer = require('./models/customer');
-const Employee = require('./models/employee');
 const queries = require('./queries');
 
 // Login to MySQL db
@@ -18,20 +14,6 @@ var mysqlConnection = mysql.createConnection({
 });
 
 const query = util.promisify(mysqlConnection.query).bind(mysqlConnection);
-
-module.exports.insertQuery = function(object) {
-    if (typeof object.insertQuery !== 'function') {
-        throw new Error('insertQuery must receive an object with method insertQuery(db)');
-    }
-    object.insertQuery(query);
-}
-
-module.exports.findObjectQuery = function(object) {
-    if (typeof object.findQuery !== 'function') {
-        throw new Error('findQuery must receive an object with method insertQuery(db)');
-    }
-    object.findQuery(query);
-}
 
 module.exports.tableCheck = function() {
 
@@ -65,7 +47,7 @@ module.exports.deleteActiveClock = async function(id) {
 
 }
 
-module.exports.getEmployeeId = async function(slackUserId) {
+module.exports.getEmployeeIdFromSlackUserId = async function(slackUserId) {
     
     var results = await query(queries.getEmployeeId(slackUserId));
     if (results.length !== 1) {
@@ -95,7 +77,7 @@ module.exports.getCustomerIdFromName = async function(name) {
 
 }
 
-module.exports.getCustomerNames = async function() {
+module.exports.getCustomers = async function() {
 
     return await query(queries.getCustomerNames);
 
