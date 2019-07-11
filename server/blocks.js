@@ -39,12 +39,24 @@ module.exports.clockinBlocks = function(slackUserId, requestId, customers) {
 
 module.exports.clockinReponseBlocks = function(customer, time) {
     return [
-	{
-		"type": "section",
-		"text": {
-			"type": "mrkdwn",
-			"text": `Clocked in\n\n*Customer:* ${customer}\n*Time:* ${time}`
-		}
-    }
-]
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": `Clocked in\n\n*Customer:* ${customer}\n*Time:* ${time}`
+            }
+        }
+    ]
+}
+
+module.exports.clockoutBlocks = function(customer, time) {
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": `Clocked out\n\n*Customer:* ${customer}\n*Time:* ${time}`
+            }
+        }
+    ]
 }

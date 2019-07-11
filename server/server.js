@@ -11,6 +11,7 @@ const app = new App({
 });
 
 app.command('/clockin', Responses.clockinResponse);
+app.command('/clockout', Responses.clockoutResponse);
 
 app.action(/^request_[0-9a-z]{32}$/, Responses.clockinRequestResponse);
 

@@ -5,12 +5,31 @@ module.exports.createActiveClock = function(employeeId, customerId, start, id) {
            `("${employeeId}", "${customerId}", "${start}", "${id}");`;
 }
 
+module.exports.getActiveClockFromEmployeeId = function(employeeId) {
+    return `SELECT * FROM ActiveClocks WHERE employeeId = "${employeeId}";`;
+}
+
+module.exports.deleteActiveClock = function(id) {
+    return `DELETE FROM ActiveClocks WHERE id = "${id}";`;
+}
+
+module.exports.getCustomerFromId = function(id) {
+    return `SELECT * FROM Customers WHERE id = "${id}";`;
+}
+
 module.exports.getCustomerIdFromName = function(name) {
     return `SELECT id FROM Customers WHERE name = "${name}";`;
 }
 
 module.exports.getEmployeeId = function(slackUserId) {
     return `SELECT id FROM Employees WHERE slackUserId = "${slackUserId}";`;
+}
+
+module.exports.createFinishedClock = function(employeeId, customerId, start, end, id) {
+    return `INSERT INTO FinishedClocks ` +
+           `(employeeId, customerId, start, end, id) ` +
+           `VALUES ` +
+           `("${employeeId}", "${customerId}", "${start}", "${end}", "${id}");`;
 }
 
 module.exports.getCustomerNames = 'SELECT * FROM Customers;';

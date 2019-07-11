@@ -49,6 +49,22 @@ module.exports.createActiveClock = async function(employeeId, customerId, start,
 
 }
 
+module.exports.getActiveClockFromEmployeeId = async function(employeeId) {
+
+    var results = await query(queries.getActiveClockFromEmployeeId(employeeId));
+    if (results.length !== 1) {
+        throw new errors.EntryNotFoundError(`No entry found in ActiveClock found with employeeId ${employeeId}`);
+    }
+    return results[0];
+
+}
+
+module.exports.deleteActiveClock = async function(id) {
+
+    query(queries.deleteActiveClock(id));
+
+}
+
 module.exports.getEmployeeId = async function(slackUserId) {
     
     var results = await query(queries.getEmployeeId(slackUserId));
@@ -56,6 +72,16 @@ module.exports.getEmployeeId = async function(slackUserId) {
         throw new errors.EntryNotFoundError(`No entry in Employees found with slackUserId ${slackUserId}`);
     }
     return results[0].id;
+
+}
+
+module.exports.getCustomerFromId = async function(id) {
+
+    var results = await query(queries.getCustomerFromId(id));
+    if (results.length !== 1) {
+        throw new errors.EntryNotFoundError(`No entry found in Customers wiht id ${id}`);
+    }
+    return results[0];
 
 }
 
@@ -72,6 +98,12 @@ module.exports.getCustomerIdFromName = async function(name) {
 module.exports.getCustomerNames = async function() {
 
     return await query(queries.getCustomerNames);
+
+}
+
+module.exports.createFinishedClock = async function(employeeId, customerId, start, finished, id) {
+    
+    query(queries.createFinishedClock(employeeId, customerId, start, finished, id));
 
 }
 
