@@ -21,6 +21,14 @@ module.exports.getCustomerIdFromName = function(name) {
     return `SELECT id FROM Customers WHERE name = "${name}";`;
 }
 
+module.exports.checkIfEmployeeHasActiveClocks = function(employeeId) {
+    return `SELECT id FROM ActiveClocks WHERE employeeId = "${employeeId}";`;
+}
+
+module.exports.checkIfEmployeeHasSlackResponses = function(employeeId) {
+    return `SELECT id FROM SlackResponses WHERE employeeId = "${employeeId}";`;
+}
+
 module.exports.getEmployeeId = function(slackUserId) {
     return `SELECT id FROM Employees WHERE slackUserId = "${slackUserId}";`;
 }

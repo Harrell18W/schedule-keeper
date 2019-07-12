@@ -22,7 +22,6 @@ module.exports.clockinRequestResponse = async function({ ack, say, action, body 
     }
 
     var customerName = action.selected_option.text.text;
-    //TODO maybe add a check here, not really necessary
     var customerId = await db.getCustomerIdFromName(customerName);
 
     try {

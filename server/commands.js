@@ -18,8 +18,6 @@ function argParser(args) {
 module.exports.clockinResponse = async function ({ command, ack, say }) {
     ack();
 
-    //TODO check if employee is already clocked out
-
     var args = argParser(command.text);
     if (args.length !== 0) {
         try {
@@ -49,6 +47,17 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
         } else {
             throw err;
         }
+    }
+
+    if (await db.checkIfEmployeeHasActiveClocks(employeeId)) {
+        say(`<@${command.user_id}> You're already checked out with a customer`);
+        return;
+    }
+
+    if (await db.checkIfEmployeeHasSlackResponses(employeeId)) {
+        say(`<@${command.user_id}> You've already gotten a check out message. ` +
+            `Please use that one before requesting another.`);
+        return;
     }
 
     var customers = await db.getCustomers();

@@ -47,6 +47,14 @@ module.exports.deleteActiveClock = async function(id) {
 
 }
 
+module.exports.checkIfEmployeeHasActiveClocks = async function(employeeId) {
+    return Boolean((await query(queries.checkIfEmployeeHasActiveClocks(employeeId))).length);
+}
+
+module.exports.checkIfEmployeeHasSlackResponses = async function(employeeId) {
+    return Boolean((await query(queries.checkIfEmployeeHasSlackResponses(employeeId))).length);
+}
+
 module.exports.getEmployeeIdFromSlackUserId = async function(slackUserId) {
     
     var results = await query(queries.getEmployeeId(slackUserId));
