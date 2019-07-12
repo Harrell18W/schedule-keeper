@@ -14,7 +14,8 @@ const app = new App({
 app.command('/clockin', commands.clockinResponse);
 app.command('/clockout', commands.clockoutResponse);
 
-app.action(/^request_[0-9a-z]{32}$/, actions.clockinRequestResponse);
+app.action(/^customer_select_[0-9a-z]{32}$/, actions.clockinRequestResponse);
+app.action(/^clockin_request_cancel_[0-9a-z]{32}$/, actions.clockinRequestCancel);
 
 async function slack_start() {
     await app.start(process.env.PORT || 3500);

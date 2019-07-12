@@ -68,9 +68,8 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
     }
 
     var id = crypto.randomBytes(16).toString('hex');
-    var requestId = 'request_' + id;
 
-    var responseBlocks = blocks.clockinBlocks(command.user_id, requestId, customers);
+    var responseBlocks = blocks.clockinBlocks(command.user_id, id, customers);
 
     db.createResponse(employeeId, time.sqlDatetime(now), time.sqlDatetime(start), id);
 
