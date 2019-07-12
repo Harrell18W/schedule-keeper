@@ -3,7 +3,6 @@ const errors = require('./errors');
 const db = require('./database');
 const time = require('./time');
 
-//TODO add cancel and clockout button
 module.exports.clockinRequestResponse = async function({ ack, say, action, body }) {
     ack();
 
@@ -128,7 +127,7 @@ module.exports.clockoutButton = async function({ ack, say, action, body }) {
 
     var timeDifference = time.dateDifference(activeClock.start, finished);
 
-    say({ blocks: blocks.clockoutBlocks(customerName, timeDifference) });
+    say({ blocks: blocks.clockoutBlocks(customerName, time.humanReadableDate(activeClock.start), time.humanReadableDate(finished), timeDifference, activeClock.id) });
 
 }
 
@@ -163,5 +162,41 @@ module.exports.clockoutCancel = async function({ ack, say, action, body }) {
     db.deleteActiveClock(activeClock.id);
 
     say(`<@${body.user.id}> Your session with ${customerName} was cancelled`);
+
+}
+
+module.exports.sessionCancel = async function({ ack, say, action, body }) {
+    ack();
+
+    try {
+        var employeeId = await db.getEmployeeIdFromSlackUserId(body.user.id);
+    } catch (err) {
+        if (err instanceof errors.EntryNotFoundError) {
+            say(`<@${body.user.id}> You do not appear to be in the employee database`);
+            return;
+        } else {
+            throw err;
+        }
+    }
+
+    var finishedClockId = action.action_id.substring(15);
+
+    try {
+        var finishedClock = await db.getFinishedClock(finishedClockId);
+    } catch(err) {
+        if (err instanceof errors.EntryNotFoundError) {
+            say(`<@${body.user.id}> The session associated with that message was not found. ` +
+                `It may have already been handled.`);
+            return;
+        } else {
+            throw err;
+        }
+    }
+
+    var customerName = (await db.getCustomerFromId(finishedClock.customerId)).name;
+
+    db.deleteFinishedClock(finishedClockId);
+
+    say(`<@${body.user.id}> Your finished session with ${customerName} was deleted`);
 
 }

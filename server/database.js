@@ -97,6 +97,22 @@ module.exports.createFinishedClock = async function(employeeId, customerId, star
 
 }
 
+module.exports.getFinishedClock = async function(id) {
+
+    var results = await query(queries.getFinishedClock(id));
+    if (results.length < 1) {
+        throw new errors.EntryNotFoundError(`No entry in FInishedClocks found with id ${id}`);
+    }
+    return results[0];
+
+}
+
+module.exports.deleteFinishedClock = async function(id) {
+
+    query(queries.deleteFinishedClock(id));
+
+}
+
 //TODO check parameters, error handling
 module.exports.createResponse = async function(employeeId, received, start, id) {
 

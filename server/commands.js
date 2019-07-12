@@ -13,8 +13,6 @@ function argParser(args) {
     return parsed;
 }
 
-//TOOD check employee has no SlackResponses associated
-//TODO add cancel button
 module.exports.clockinResponse = async function ({ command, ack, say }) {
     ack();
 
@@ -131,7 +129,9 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
     db.createFinishedClock(employeeId, activeClock.customerId, time.sqlDatetime(activeClock.start), time.sqlDatetime(finished), activeClock.id);
     db.deleteActiveClock(activeClock.id);
 
+    var hrStart = time.humanReadableDate(activeClock.start);
+    var hrFinished = time.humanReadableDate(finished);
     var timeDifference = time.dateDifference(activeClock.start, finished);
 
-    say({ blocks: blocks.clockoutBlocks(customerName, timeDifference) });
+    say({ blocks: blocks.clockoutBlocks(customerName, hrStart, hrFinished, timeDifference, activeClock.id) });
 }

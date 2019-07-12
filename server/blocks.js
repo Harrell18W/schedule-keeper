@@ -77,14 +77,14 @@ module.exports.clockinReponseBlocks = function(customer, time, id) {
                     "value": "clockout"
                 },
                 {
-                    "action_id": `clockout_cancel_${id}`,
+                    "action_id": `clockin_cancel_${id}`,
                     "type": "button",
                     "text": {
                         "type": "plain_text",
                         "text": ":x: Cancel"
                     },
                     "style": "danger",
-                    "value": "cancel_clockout"
+                    "value": "cancel_clockin"
                 }
             ]
         }
@@ -92,14 +92,34 @@ module.exports.clockinReponseBlocks = function(customer, time, id) {
 }
 
 //TOOD add time in and time out
-module.exports.clockoutBlocks = function(customer, time) {
+module.exports.clockoutBlocks = function(customer, start, end, time, id) {
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": `:heavy_check_mark: Clocked out\n\n*Customer:* ${customer}\n*Time:* ${time}`
+                "text": `:heavy_check_mark: Clocked out\n\n` +
+                        `*Customer:* ${customer}\n` +
+                        `*Start:* ${start}\n` +
+                        `*End:* ${end}\n` +
+                        `*Time:* ${time}`
             }
+        },
+        {
+            "type": "actions",
+            "block_id": "clockedout_elements",
+            "elements": [
+                {
+                    "action_id": `session_cancel_${id}`,
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": ":x: Cancel"
+                    },
+                    "style": "danger",
+                    "value": "session_clockout"
+                }
+            ]
         }
     ]
 }

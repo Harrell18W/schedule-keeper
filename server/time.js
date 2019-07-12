@@ -18,6 +18,10 @@ module.exports.dateDifference = function(date1, date2) {
     }
 }
 
+module.exports.humanReadableDate = function(date) {
+    return date.toString().substring(0, 24);
+}
+
 module.exports.sqlDatetime = function(date) {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ` +
            `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;

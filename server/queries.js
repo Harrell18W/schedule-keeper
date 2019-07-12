@@ -40,6 +40,14 @@ module.exports.createFinishedClock = function(employeeId, customerId, start, end
            `("${employeeId}", "${customerId}", "${start}", "${end}", "${id}");`;
 }
 
+module.exports.getFinishedClock = function(id) {
+    return `SELECT * FROM FinishedClocks WHERE id = "${id}";`;
+}
+
+module.exports.deleteFinishedClock = function(id) {
+    return `DELETE FROM FinishedClocks WHERE id = "${id}";`;
+}
+
 module.exports.getCustomerNames = 'SELECT * FROM Customers;';
 
 module.exports.createResponse = function(employeeId, received, start, id) {
