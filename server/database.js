@@ -69,7 +69,7 @@ module.exports.getCustomerFromId = async function(id) {
 
     var results = await query(queries.getCustomerFromId(id));
     if (results.length !== 1) {
-        throw new errors.EntryNotFoundError(`No entry found in Customers wiht id ${id}`);
+        throw new errors.EntryNotFoundError(`No entry found in Customers with id ${id}`);
     }
     return results[0];
 

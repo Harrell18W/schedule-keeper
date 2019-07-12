@@ -54,14 +54,39 @@ module.exports.clockinBlocks = function(slackUserId, id, customers) {
 
 }
 
-module.exports.clockinReponseBlocks = function(customer, time) {
+module.exports.clockinReponseBlocks = function(customer, time, id) {
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": `:large_blue_diamond: Clocked in\n\n*Customer:* ${customer}\n*Time:* ${time}`
+                "text": `:clock4: Clocked in\n\n*Customer:* ${customer}\n*Time:* ${time}`
             }
+        },
+        {
+            "type": "actions",
+            "block_id": "clockedin_elements",
+            "elements": [
+                {
+                    "action_id": `clockout_button_${id}`,
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": ":heavy_check_mark: Clock Out"
+                    },
+                    "value": "clockout"
+                },
+                {
+                    "action_id": `clockout_cancel_${id}`,
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": ":x: Cancel"
+                    },
+                    "style": "danger",
+                    "value": "cancel_clockout"
+                }
+            ]
         }
     ]
 }

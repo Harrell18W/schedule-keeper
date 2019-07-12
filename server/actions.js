@@ -48,7 +48,7 @@ module.exports.clockinRequestResponse = async function({ ack, say, action, body 
     //TODO make this nicer
     var hrDate = response.start.toString().substring(0, 24);
 
-    say({ blocks: blocks.clockinReponseBlocks(customerName, hrDate)});
+    say({ blocks: blocks.clockinReponseBlocks(customerName, hrDate, responseId) });
 }
 
 module.exports.clockinRequestCancel = async function({ ack, say, action, body }) {
@@ -88,5 +88,80 @@ module.exports.clockinRequestCancel = async function({ ack, say, action, body })
     db.deleteResponse(response.id);
 
     say(`<@${body.user.id}> Your clockin request was cancelled`);
+
+}
+
+module.exports.clockoutButton = async function({ ack, say, action, body }) {
+    ack();
+
+    var id = action.action_id.substring(16);
+
+    try {
+        var employeeId = await db.getEmployeeIdFromSlackUserId(body.user.id);
+    } catch (err) {
+        if (err instanceof errors.EntryNotFoundError) {
+            say(`<@${body.user.id}> You do not appear to be in the employee database`);
+            return;
+        } else {
+            throw err;
+        }
+    }
+
+    try {
+        var activeClock = await db.getActiveClockFromEmployeeId(employeeId);
+    } catch (err) {
+        if (err instanceof errors.EntryNotFoundError) {
+            say(`<@${body.user.id}> There is no active session tied to your name. ` +
+                `Did you already clock out or cancel your session?`);
+            return;
+        } else {
+            throw err;
+        }
+    }
+
+    var customerName = (await db.getCustomerFromId(activeClock.customerId)).name;
+
+    var finished = new Date();
+
+    db.createFinishedClock(employeeId, activeClock.customerId, time.sqlDatetime(activeClock.start), time.sqlDatetime(finished), activeClock.id);
+    db.deleteActiveClock(activeClock.id);
+
+    var timeDifference = time.dateDifference(activeClock.start, finished);
+
+    say({ blocks: blocks.clockoutBlocks(customerName, timeDifference) });
+
+}
+
+module.exports.clockoutCancel = async function({ ack, say, action, body }) {
+    ack();
+
+    try {
+        var employeeId = await db.getEmployeeIdFromSlackUserId(body.user.id);
+    } catch (err) {
+        if (err instanceof errors.EntryNotFoundError) {
+            say(`<@${body.user.id}> You do not appear to be in the employee database`);
+            return;
+        } else {
+            throw err;
+        }
+    }
+
+    var activeClockId = action.action_id.substring(16);
+
+    try {
+        var activeClock = await db.getActiveClockFromEmployeeId(employeeId);
+    } catch (err) {
+        if (err instanceof errors.EntryNotFoundError) {
+            say(`<@${body.user.id}> There are no sessions associated with you. ` +
+                `Did you already clock in or cancel your session?`);
+            return;
+        }
+    }
+
+    var customerName = (await db.getCustomerFromId(activeClock.customerId)).name;
+
+    db.deleteActiveClock(activeClock.id);
+
+    say(`<@${body.user.id}> Your session with ${customerName} was cancelled`);
 
 }
