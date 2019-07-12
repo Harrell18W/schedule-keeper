@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 
+const apputils = require('./apputils');
 const blocks = require('./blocks');
 const db = require('./database');
 const errors = require('./errors');
@@ -13,21 +14,26 @@ function argParser(args) {
     return parsed;
 }
 
+function timeParser(say, timeArg, slackUserId) {
+    try {
+        return time.timeParameter(timeArg);
+    } catch (err) {
+        if (err instanceof errors.ValueError) {
+            say(`<@${slackUserId}> Unable to parse timestamp`);
+            return { hour: null, minute: null };
+        } else {
+            throw err;
+        }
+    }
+}
+
 module.exports.clockinResponse = async function ({ command, ack, say }) {
     ack();
 
     var args = argParser(command.text);
     if (args.length !== 0) {
-        try {
-            var { hour, minute } = time.timeParameter(args[0]);
-        } catch (err) {
-            if (err instanceof errors.ValueError) {
-                say(`<@${command.user_id}> Unable to parse timestamp`);
-                return;
-            } else {
-                throw err;
-            }
-        }
+        var { hour, minute } = timeParser(say, args[0], command.user_id);
+        if (hour === null) return;
 
         var now = new Date();
         var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
@@ -36,16 +42,8 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
         var start = now;
     }
 
-    try {
-        var employeeId = await db.getEmployeeIdFromSlackUserId(command.user_id);
-    } catch (err) {
-        if (err instanceof errors.EntryNotFoundError) {
-            say(`<@${command.user_id}> You do not appear to be in the employee database`);
-            return;
-        } else {
-            throw err;
-        }
-    }
+    var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, command.user_id);
+    if (!employeeId) return;
 
     if (await db.checkIfEmployeeHasActiveClocks(employeeId)) {
         say(`<@${command.user_id}> You're already checked out with a customer`);
@@ -79,16 +77,8 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
 
     var args = argParser(command.text);
     if (args.length !== 0) {
-        try {
-            var { hour, minute } = time.timeParameter(args[0]);
-        } catch (err) {
-            if (err instanceof errors.ValueError) {
-                say(`<@${command.user_id}> Unable to parse timestamp`);
-                return;
-            } else {
-                throw err;
-            }
-        }
+        var { hour, minute } = timeParser(say, args[0], command.user_id);
+        if (hour === null) return;
 
         var now = new Date();
         var finished = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
@@ -97,27 +87,10 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
         var finished = now;
     }
 
-    try {
-        var employeeId = await db.getEmployeeIdFromSlackUserId(command.user_id);
-    } catch (err) {
-        if (err instanceof errors.EntryNotFoundError) {
-            say(`<@${command.user_id}> You do not appear to be in the employee database`);
-            return;
-        } else {
-            throw err;
-        }
-    }
+    var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, command.user_id);
+    if (!employeeId) return;
 
-    try {
-        var activeClock = await db.getActiveClockFromEmployeeId(employeeId);
-    } catch (err) {
-        if (err instanceof errors.EntryNotFoundError) {
-            say(`<@${command.user_id}> There is no active session tied to your name`);
-            return;
-        } else {
-            throw err;
-        }
-    }
+    var activeClock = await apputils.getActiveClockFromEmployeeId(say, command.user_id, employeeId);
 
     if (activeClock.start > finished) {
         say(`<@${command.user_id}> The clockout time you've specified is before the time at which you started`);
