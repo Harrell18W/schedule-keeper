@@ -87,7 +87,18 @@ module.exports.getCustomerIdFromName = async function(name) {
 
 module.exports.getCustomers = async function() {
 
-    return await query(queries.getCustomerNames);
+    return await query(queries.getCustomers);
+
+}
+
+module.exports.searchCustomers = async function(identifier) {
+
+    var results = module.exports.getCustomers();
+    for (var customer of customers) {
+        if (identifier === customer.name || customers.customShorthands.indexOf(identifier) > -1)
+            return customer;
+    }
+    return null;
 
 }
 
@@ -113,7 +124,6 @@ module.exports.deleteFinishedClock = async function(id) {
 
 }
 
-//TODO check parameters, error handling
 module.exports.createResponse = async function(employeeId, received, start, id) {
 
     query(queries.createResponse(employeeId, received, start, id));
@@ -130,7 +140,6 @@ module.exports.getResponse = async function(id) {
 
 }
 
-//TODO check parameters, error handling
 module.exports.deleteResponse = async function(id) {
 
     query(queries.deleteResponse(id));
