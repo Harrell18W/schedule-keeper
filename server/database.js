@@ -1,9 +1,15 @@
-//TODO prevent SQL injections
 const mysql = require('mysql');
 const util = require('util');
 
 const errors = require('./errors');
 const queries = require('./queries');
+
+function escapeArgs(args) {
+    var escapedArgs = [];
+    for (var arg of args)
+        escapedArgs.push(mysql.escape(arg));
+    return escapedArgs;
+}
 
 // Login to MySQL db
 var mysqlConnection = mysql.createConnection({
@@ -24,10 +30,12 @@ module.exports.tableCheck = function() {
 };
 
 module.exports.createActiveClock = async function(employeeId, customerId, start, id) {
+    [employeeId, customerId, start, id] = escapeArgs(arguments);
     query(queries.createActiveClock(employeeId, customerId, start, id));
 };
 
 module.exports.getActiveClockFromEmployeeId = async function(employeeId) {
+    [employeeId] = escapeArgs(arguments);
     var results = await query(queries.getActiveClockFromEmployeeId(employeeId));
     if (results.length !== 1) {
         throw new errors.EntryNotFoundError(`No entry found in ActiveClock found with employeeId ${employeeId}`);
@@ -36,18 +44,22 @@ module.exports.getActiveClockFromEmployeeId = async function(employeeId) {
 };
 
 module.exports.deleteActiveClock = async function(id) {
+    [id] = escapeArgs(arguments);
     query(queries.deleteActiveClock(id));
 };
 
 module.exports.checkIfEmployeeHasActiveClocks = async function(employeeId) {
+    [employeeId] = escapeArgs(arguments);
     return Boolean((await query(queries.checkIfEmployeeHasActiveClocks(employeeId))).length);
 };
 
 module.exports.checkIfEmployeeHasSlackResponses = async function(employeeId) {
+    [employeeId] = escapeArgs(arguments);
     return Boolean((await query(queries.checkIfEmployeeHasSlackResponses(employeeId))).length);
 };
 
 module.exports.getEmployeeIdFromSlackUserId = async function(slackUserId) {
+    [slackUserId] = escapeArgs(arguments);
     var results = await query(queries.getEmployeeId(slackUserId));
     if (results.length !== 1) {
         throw new errors.EntryNotFoundError(`No entry in Employees found with slackUserId ${slackUserId}`);
@@ -56,6 +68,7 @@ module.exports.getEmployeeIdFromSlackUserId = async function(slackUserId) {
 };
 
 module.exports.getCustomerFromId = async function(id) {
+    [id] = escapeArgs(arguments);
     var results = await query(queries.getCustomerFromId(id));
     if (results.length !== 1) {
         throw new errors.EntryNotFoundError(`No entry found in Customers with id ${id}`);
@@ -64,6 +77,7 @@ module.exports.getCustomerFromId = async function(id) {
 };
 
 module.exports.getCustomerIdFromName = async function(name) {
+    [name] = escapeArgs(arguments);
     var results = await query(queries.getCustomerIdFromName(name));
     if (results.length !== 1) {
         throw new errors.EntryNotFoundError(`No entry in Customers found with name ${name}`);
@@ -76,19 +90,24 @@ module.exports.getCustomers = async function() {
 };
 
 module.exports.searchCustomers = async function(identifier) {
+    [identifier] = escapeArgs(arguments);
+    identifier = identifier.toLowerCase().substring(1, identifier.length - 1);
     var results = await this.getCustomers();
     for (var customer of results) {
-        if (identifier === customer.name || customer.customShorthands.indexOf(identifier.toLowerCase()) > -1)
+        if (identifier == customer.name.toLowerCase()|| customer.customShorthands.indexOf(identifier.toLowerCase()) > -1) {
             return customer;
+        }
     }
     return null;
 };
 
 module.exports.createFinishedClock = async function(employeeId, customerId, start, finished, id) {
+    [employeeId, customerId, start, finished, id] = escapeArgs(arguments); 
     query(queries.createFinishedClock(employeeId, customerId, start, finished, id));
 };
 
 module.exports.getFinishedClock = async function(id) {
+    [id] = escapeArgs(arguments);
     var results = await query(queries.getFinishedClock(id));
     if (results.length < 1) {
         throw new errors.EntryNotFoundError(`No entry in FInishedClocks found with id ${id}`);
@@ -97,14 +116,17 @@ module.exports.getFinishedClock = async function(id) {
 };
 
 module.exports.deleteFinishedClock = async function(id) {
+    [id] = escapeArgs(arguments);
     query(queries.deleteFinishedClock(id));
 };
 
 module.exports.createResponse = async function(employeeId, received, start, id) {
+    [employeeId, received, start, id] = escapeArgs(arguments);
     query(queries.createResponse(employeeId, received, start, id));
 };
 
 module.exports.getResponse = async function(id) {
+    [id] = escapeArgs(arguments);
     var results = await query(queries.getResponse(id));
     if (results.length !== 1) {
         throw new errors.EntryNotFoundError(`No entry in SlackResponses found with id ${id}`);
@@ -113,6 +135,7 @@ module.exports.getResponse = async function(id) {
 };
 
 module.exports.deleteResponse = async function(id) {
+    [id] = escapeArgs(arguments);
     query(queries.deleteResponse(id));
 };
 

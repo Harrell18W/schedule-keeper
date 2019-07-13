@@ -41,7 +41,7 @@ module.exports.timeParameter = function(timeArg) {
         digits = timeArg.substring(0, 4);
         hour = Number(digits.substring(0, 2));
         hour += timeArg.includes('p') ? 12 : 0;
-        hour = hour == 24 && timeArg.includes('p') ? 13 : hour;
+        hour = hour == 24 && timeArg.includes('p') ? 12 : hour;
         minute = Number(digits.substring(2));
     } else if (/^\d:\d{2}([ap]m?)?$/i.test(timeArg)) {
         digits = timeArg.substring(0, 4);
@@ -52,7 +52,7 @@ module.exports.timeParameter = function(timeArg) {
         digits = timeArg.substring(0, 5);
         hour = Number(digits.substring(0, 2));
         hour += timeArg.includes('p') ? 12 : 0;
-        hour = hour == 24 && timeArg.includes('p') ? 13 : hour;
+        hour = hour == 24 && timeArg.includes('p') ? 12 : hour;
         minute = Number(digits.substring(3));
     } else {
         throw new errors.ValueError(`Invalid time ${timeArg}`);

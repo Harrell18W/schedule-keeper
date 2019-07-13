@@ -8,7 +8,7 @@ module.exports.clockin = async function(say, slackUserId, customerName, start, i
     if (!employeeId) return;
 
     if (await db.checkIfEmployeeHasActiveClocks(employeeId)) {
-        say(`<@${slackUserId} You're already checked out with a customer`);
+        say(`<@${slackUserId}> You're already checked out with a customer`);
         return;
     }
     if (await db.checkIfEmployeeHasSlackResponses(employeeId)) {
@@ -19,7 +19,7 @@ module.exports.clockin = async function(say, slackUserId, customerName, start, i
 
     var customer = await db.searchCustomers(customerName);
     if (!customer) {
-        say(`@${slackUserId} Customer ${customerName} not found`);
+        say(`<@${slackUserId}> Customer ${customerName} not found`);
         return;
     }
 

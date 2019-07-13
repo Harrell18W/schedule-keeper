@@ -49,9 +49,11 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
     var id = crypto.randomBytes(16).toString('hex');
     if (args.time) {
         var { hour, minute } = timeParser(say, args.time, command.user_id);
+        if (!hour) return;
         start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     }
     if (args.customer) {
+        console.log('id: ' + command.user_id);
         apputils.clockin(say, command.user_id, args.customer, start, id);
         return;
     }
@@ -60,7 +62,7 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
     if (!employeeId) return;
 
     if (await db.checkIfEmployeeHasActiveClocks(employeeId)) {
-        say(`<@${command.user_id}> You're already checked out with a customer`);
+        say(`<@${command.user_id}> You're already clocked in with a customer`);
         return;
     }
 
@@ -93,6 +95,7 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
     var finished = now;
     if (args.time) {
         var { hour, minute } = timeParser(say, args.time, command.user_id);
+        if (!hour) return;
         finished = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     }
 
