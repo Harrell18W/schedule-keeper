@@ -1,6 +1,5 @@
 const apputils = require('./apputils');
-const blocks = require(`./blocks`);
-const errors = require('./errors');
+const blocks = require('./blocks');
 const db = require('./database');
 const time = require('./time');
 
@@ -23,7 +22,7 @@ module.exports.clockinRequestResponse = async function({ ack, say, action, body 
 
     apputils.clockin(say, body.user.id, customerName, response.start, responseId);
     await db.deleteResponse(responseId);
-}
+};
 
 module.exports.clockinRequestCancel = async function({ ack, say, action, body }) {
     ack();
@@ -43,13 +42,10 @@ module.exports.clockinRequestCancel = async function({ ack, say, action, body })
     db.deleteResponse(response.id);
 
     say(`<@${body.user.id}> Your clock in request was cancelled`);
+};
 
-}
-
-module.exports.clockoutButton = async function({ ack, say, action, body }) {
+module.exports.clockoutButton = async function({ ack, say, body }) {
     ack();
-
-    var id = action.action_id.substring(16);
 
     var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, body.user.id);
     if (!employeeId) return;
@@ -67,8 +63,7 @@ module.exports.clockoutButton = async function({ ack, say, action, body }) {
     var timeDifference = time.dateDifference(activeClock.start, finished);
 
     say({ blocks: blocks.clockoutBlocks(customerName, time.humanReadableDate(activeClock.start), time.humanReadableDate(finished), timeDifference, activeClock.id) });
-
-}
+};
 
 module.exports.clockoutCancel = async function({ ack, say, action, body }) {
     ack();
@@ -84,8 +79,7 @@ module.exports.clockoutCancel = async function({ ack, say, action, body }) {
     db.deleteActiveClock(activeClock.id);
 
     say(`<@${body.user.id}> Your session with ${customerName} was cancelled`);
-
-}
+};
 
 module.exports.sessionCancel = async function({ ack, say, action, body }) {
     ack();
@@ -103,5 +97,4 @@ module.exports.sessionCancel = async function({ ack, say, action, body }) {
     db.deleteFinishedClock(finishedClockId);
 
     say(`<@${body.user.id}> Your finished session with ${customerName} was deleted`);
-
-}
+};

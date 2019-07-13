@@ -1,6 +1,5 @@
 //TODO redo styling across project
 const { App } = require('@slack/bolt');
-const db = require('./database');
 
 const actions = require('./actions');
 const commands = require('./commands');

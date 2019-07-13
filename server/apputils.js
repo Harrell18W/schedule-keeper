@@ -13,7 +13,7 @@ module.exports.clockin = async function(say, slackUserId, customerName, start, i
     }
     if (await db.checkIfEmployeeHasSlackResponses(employeeId)) {
         say(`<@${slackUserId}> You've already gotten a check out message. ` +
-            `Please use that one before requesting another.`);
+            'Please use that one before requesting another.');
         return;
     }
 
@@ -27,7 +27,7 @@ module.exports.clockin = async function(say, slackUserId, customerName, start, i
 
     var hrDate = start.toString().substring(0, 24);
     say({ blocks: blocks.clockinReponseBlocks(customerName, hrDate, id) });
-}
+};
 
 module.exports.getResponse = async function(say, slackUserId, responseId) {
     try {
@@ -35,14 +35,14 @@ module.exports.getResponse = async function(say, slackUserId, responseId) {
     } catch(err) {
         if(err instanceof errors.EntryNotFoundError) {
             say(`<@${slackUserId}> ` +
-                `The message that you tried to respond to was not found. ` +
-                `Did you already respond to it?`);
+                'The message that you tried to respond to was not found. ' +
+                'Did you already respond to it?');
             return null;
         } else {
             throw err;
         }
     }
-}
+};
 
 module.exports.getEmployeeIdFromSlackUserId = async function (say, slackUserId) {
     try {
@@ -55,7 +55,7 @@ module.exports.getEmployeeIdFromSlackUserId = async function (say, slackUserId) 
             throw err;
         }
     }
-}
+};
 
 module.exports.getActiveClockFromEmployeeId = async function(say, slackUserId, employeeId) {
     try {
@@ -63,13 +63,13 @@ module.exports.getActiveClockFromEmployeeId = async function(say, slackUserId, e
     } catch (err) {
         if (err instanceof errors.EntryNotFoundError) {
             say(`<@${slackUserId}> There is no active session tied to your name. ` +
-                `Did you already clock out or cancel your session?`);
+                'Did you already clock out or cancel your session?');
             return null;
         } else {
             throw err;
         }
     }
-}
+};
 
 module.exports.getFinishedClock = async function(say, slackUserId, finishedClockId) {
     try {
@@ -77,7 +77,7 @@ module.exports.getFinishedClock = async function(say, slackUserId, finishedClock
     } catch (err) {
         if (err instanceof errors.EntryNotFoundError) {
             say(`<@${slackUserId}> The session associated with that message was not found. ` +
-                `It may have already been handled or deleted.`);
+                'It may have already been handled or deleted.');
         }
     }
-}
+};

@@ -45,12 +45,11 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
 
     var args = argParser(command.text);
     var now = new Date();
+    var start = now;
     var id = crypto.randomBytes(16).toString('hex');
     if (args.time) {
         var { hour, minute } = timeParser(say, args.time, command.user_id);
-        var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
-    } else {
-        var start = now;
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     }
     if (args.customer) {
         apputils.clockin(say, command.user_id, args.customer, start, id);
@@ -67,7 +66,7 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
 
     if (await db.checkIfEmployeeHasSlackResponses(employeeId)) {
         say(`<@${command.user_id}> You've already gotten a check out message. ` +
-            `Please use that one before requesting another.`);
+            'Please use that one before requesting another.');
         return;
     }
 
@@ -84,18 +83,17 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
     db.createResponse(employeeId, time.sqlDatetime(now), time.sqlDatetime(start), id);
 
     say({ blocks: responseBlocks });
-}
+};
 
 module.exports.clockoutResponse = async function({ command, ack, say }) {
     ack();
 
     var args = argParser(command.text);
     var now = new Date();
+    var finished = now;
     if (args.time) {
         var { hour, minute } = timeParser(say, args.time, command.user_id);
-        var finished = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
-    } else {
-        var finished = now;
+        finished = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     }
 
     var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, command.user_id);
@@ -118,4 +116,4 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
     var timeDifference = time.dateDifference(activeClock.start, finished);
 
     say({ blocks: blocks.clockoutBlocks(customerName, hrStart, hrFinished, timeDifference, activeClock.id) });
-}
+};
