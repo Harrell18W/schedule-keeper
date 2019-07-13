@@ -93,9 +93,9 @@ module.exports.getCustomers = async function() {
 
 module.exports.searchCustomers = async function(identifier) {
 
-    var results = module.exports.getCustomers();
-    for (var customer of customers) {
-        if (identifier === customer.name || customers.customShorthands.indexOf(identifier) > -1)
+    var results = await this.getCustomers();
+    for (var customer of results) {
+        if (identifier === customer.name || customer.customShorthands.indexOf(identifier.toLowerCase()) > -1)
             return customer;
     }
     return null;

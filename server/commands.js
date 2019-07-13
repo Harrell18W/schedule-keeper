@@ -11,7 +11,20 @@ function argParser(args) {
     var parsed = [];
     for (var i of stripped)
         if (i !== '') parsed.push(i);
-    return parsed;
+    if (parsed.length === 0)
+        return { time: null, customer: null };
+    if (parsed.length > 2)
+        throw new errors.CommandArgsError(`Invalid args ${args}`);
+    if (/\d+[amp]{0,2}$/.test(args[0])) {
+        return {
+            time: parsed[0],
+            customer: parsed.length > 1 ? parsed[1] : null
+        };
+    }
+    return {
+        time: null,
+        customer: parsed[0]
+    };
 }
 
 function timeParser(say, timeArg, slackUserId) {
@@ -31,15 +44,17 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
     ack();
 
     var args = argParser(command.text);
-    if (args.length !== 0) {
-        var { hour, minute } = timeParser(say, args[0], command.user_id);
-        if (hour === null) return;
-
-        var now = new Date();
+    var now = new Date();
+    var id = crypto.randomBytes(16).toString('hex');
+    if (args.time) {
+        var { hour, minute } = timeParser(say, args.time, command.user_id);
         var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     } else {
-        var now = new Date();
         var start = now;
+    }
+    if (args.customer) {
+        apputils.clockin(say, command.user_id, args.customer, start, id);
+        return;
     }
 
     var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, command.user_id);
@@ -63,7 +78,6 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
         return;
     }
 
-    var id = crypto.randomBytes(16).toString('hex');
 
     var responseBlocks = blocks.clockinBlocks(command.user_id, id, customers);
 
@@ -76,14 +90,11 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
     ack();
 
     var args = argParser(command.text);
-    if (args.length !== 0) {
-        var { hour, minute } = timeParser(say, args[0], command.user_id);
-        if (hour === null) return;
-
-        var now = new Date();
+    var now = new Date();
+    if (args.time) {
+        var { hour, minute } = timeParser(say, args.time, command.user_id);
         var finished = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     } else {
-        var now = new Date();
         var finished = now;
     }
 

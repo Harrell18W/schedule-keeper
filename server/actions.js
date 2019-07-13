@@ -12,23 +12,17 @@ module.exports.clockinRequestResponse = async function({ ack, say, action, body 
     if (!response) return;
 
     var customerName = action.selected_option.text.text;
-    var customerId = await db.getCustomerIdFromName(customerName);
-
-    var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, body.user.id);
-    if (!employeeId) return;
 
     //TESTLATER
+    var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, body.user.id);
+    if (!employeeId) return;
     if (employeeId !== response.employeeId) {
         say(`<@${body.user.id}> You do not appear to be the person who spawned this command`);
         return;
     }
 
-    db.createActiveClock(employeeId, customerId, time.sqlDatetime(response.start), responseId);
+    apputils.clockin(say, body.user.id, customerName, response.start, responseId);
     await db.deleteResponse(responseId);
-
-    var hrDate = response.start.toString().substring(0, 24);
-
-    say({ blocks: blocks.clockinReponseBlocks(customerName, hrDate, responseId) });
 }
 
 module.exports.clockinRequestCancel = async function({ ack, say, action, body }) {
