@@ -4,7 +4,7 @@
   "description": "Server component of schedule-keeper using MySQL and Slack",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha",
     "devstart": "nodemon server.js"
   },
   "author": "William Harrell",
@@ -14,7 +14,9 @@
     "mysql": "^2.17.1"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "^6.0.1",
+    "mocha": "^6.1.4",
     "nodemon": "^1.19.1"
   }
 }
