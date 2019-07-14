@@ -1,6 +1,7 @@
 const expect = require('chai').expect;
 const it = require('mocha').it;
 
+const errors = require('../errors');
 const time = require('../time');
 
 const dates = [
@@ -139,6 +140,17 @@ const timeArgs = [
     }
 ];
 
+const invalidTimeArgs = [
+    '2400',
+    '2500',
+    '0060',
+    '24:00',
+    '24:60',
+    '00:60',
+    '24:00PM',
+    'abcd'
+];
+
 it('time.dateDifference', function(done) {
     expect(time.dateDifference(dates[0].date, dates[1].date)).to.equal('23 hours, 59 minutes');
     expect(time.dateDifference(dates[1].date, dates[0].date)).to.equal('23 hours, 59 minutes');
@@ -171,6 +183,13 @@ for (var timeArg of timeArgs) {
         var result = time.timeParameter(timeArg.arg);
         expect(result.hour).to.equal(timeArg.expectedHour);
         expect(result.minute).to.equal(timeArg.expectedMinute);
+        done();
+    });
+}
+
+for (var invalidTimeArg of invalidTimeArgs) {
+    it(`time.timeParamemter: invalid arg ${invalidTimeArg}`, function(done) {
+        expect(() => time.timeParameter(invalidTimeArg)).to.throw(errors.ValueError);
         done();
     });
 }
