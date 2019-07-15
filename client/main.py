@@ -1,21 +1,39 @@
 import sys
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication
-from PySide2.QtCore import QFile
+from PySide2.QtCore import QFile, SIGNAL
 
 import slots
 
-app = QApplication(sys.argv)
+class MainWindow(object):
 
-ui_file = QFile('ui/main_window.ui')
-ui_file.open(QFile.ReadOnly)
+    def __init__(self):
+        self.app = QApplication(sys.argv)
+        ui_file = QFile('ui/main_window.ui')
+        error_file = QFile('ui/error_dialog.ui')
+        ui_file.open(QFile.ReadOnly)
+        error_file.open(QFile.ReadOnly)
 
-loader = QUiLoader()
-window = loader.load(ui_file)
-ui_file.close()
+        self.loader = QUiLoader()
+        self.window = self.loader.load(ui_file)
 
-slots.connect_slots(window)
+        self.error = self.loader.load(error_file)
+        self.error.ok_pushbutton.connect(SIGNAL('clicked()'), self.hide_error)
 
-window.show()
+        ui_file.close()
+        error_file.close()
 
-sys.exit(app.exec_())
+        slots.connect_slots(self)
+
+        self.window.show()
+
+    def show_error(self, msg):
+        self.error.message_label.setText(msg)
+        self.error.show()
+
+    def hide_error(self):
+        self.error.hide()
+
+if __name__ == '__main__':
+    main = MainWindow()
+    sys.exit(main.app.exec_())

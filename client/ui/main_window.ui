@@ -283,14 +283,14 @@
           <item>
            <layout class="QVBoxLayout" name="employees_detail">
             <item>
-             <widget class="QLabel" name="employees_name_label">
+             <widget class="QLabel" name="employees_firstname_label">
               <property name="text">
-               <string>Name</string>
+               <string>First Name</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="employees_name_textedit">
+             <widget class="QTextEdit" name="employees_firstname_textedit">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -303,17 +303,20 @@
                 <height>30</height>
                </size>
               </property>
+              <property name="placeholderText">
+               <string>John</string>
+              </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="employees_lastname_label">
               <property name="text">
                <string>Last Name</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="textEdit">
+             <widget class="QTextEdit" name="employees_lastname_textedit">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -325,6 +328,9 @@
                 <width>356</width>
                 <height>30</height>
                </size>
+              </property>
+              <property name="placeholderText">
+               <string>Doe</string>
               </property>
              </widget>
             </item>
@@ -349,6 +355,9 @@
                 <height>30</height>
                </size>
               </property>
+              <property name="placeholderText">
+               <string>Optional</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -372,6 +381,9 @@
                 <height>30</height>
                </size>
               </property>
+              <property name="placeholderText">
+               <string>Optional</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -394,6 +406,12 @@
                 <width>356</width>
                 <height>30</height>
                </size>
+              </property>
+              <property name="tabStopDistance">
+               <double>78.000000000000000</double>
+              </property>
+              <property name="placeholderText">
+               <string>UABC12DEF</string>
               </property>
              </widget>
             </item>
