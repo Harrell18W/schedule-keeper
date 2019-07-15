@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>932</width>
-    <height>629</height>
+    <width>1000</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,8 +18,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>800</width>
-    <height>500</height>
+    <width>1000</width>
+    <height>720</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -90,7 +90,7 @@
        <attribute name="title">
         <string>Customers and Employees</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_10">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <layout class="QHBoxLayout" name="customers">
           <item>
@@ -115,7 +115,7 @@
            </layout>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="customers_details_fields">
+           <layout class="QVBoxLayout" name="customers_details">
             <item>
              <widget class="QLabel" name="customers_name_label">
               <property name="text">
@@ -127,7 +127,7 @@
              <widget class="QTextEdit" name="customers_name_textedit">
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
+                <width>356</width>
                 <height>30</height>
                </size>
               </property>
@@ -141,31 +141,106 @@
              </widget>
             </item>
             <item>
-             <widget class="QListView" name="customers_nicknames_listview"/>
+             <widget class="QListView" name="customers_nicknames_listview">
+              <property name="maximumSize">
+               <size>
+                <width>356</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QTextEdit" name="customers_nicknames_textedit">
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
+                <width>356</width>
                 <height>30</height>
                </size>
               </property>
              </widget>
             </item>
             <item>
+             <layout class="QHBoxLayout" name="nickname_pushbuttons">
+              <item>
+               <widget class="QPushButton" name="nickname_add_pushbutton">
+                <property name="maximumSize">
+                 <size>
+                  <width>174</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Add Nickname</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="nickname_delete_pushbutton">
+                <property name="maximumSize">
+                 <size>
+                  <width>174</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Delete Nickname</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
              <layout class="QHBoxLayout" name="customers_pushbuttons">
               <item>
                <widget class="QPushButton" name="customers_add_pushbutton">
+                <property name="maximumSize">
+                 <size>
+                  <width>84</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Add</string>
                 </property>
                </widget>
               </item>
               <item>
+               <widget class="QPushButton" name="customer_update_pushbutton">
+                <property name="maximumSize">
+                 <size>
+                  <width>84</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Update</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="customers_delete_pushbutton">
+                <property name="maximumSize">
+                 <size>
+                  <width>84</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Delete</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="customers_refresh_pushbutton">
+                <property name="maximumSize">
+                 <size>
+                  <width>84</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Refresh</string>
                 </property>
                </widget>
               </item>
@@ -194,7 +269,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QTableView" name="employees_tableview">
+             <widget class="QTableWidget" name="employees_tablewidget">
               <property name="minimumSize">
                <size>
                 <width>600</width>
@@ -216,9 +291,38 @@
             </item>
             <item>
              <widget class="QTextEdit" name="employees_name_textedit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
+                <width>356</width>
+                <height>30</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Last Name</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTextEdit" name="textEdit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>356</width>
                 <height>30</height>
                </size>
               </property>
@@ -233,9 +337,15 @@
             </item>
             <item>
              <widget class="QTextEdit" name="employees_email_textedit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
+                <width>356</width>
                 <height>30</height>
                </size>
               </property>
@@ -250,9 +360,15 @@
             </item>
             <item>
              <widget class="QTextEdit" name="employees_phone_textedit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
+                <width>356</width>
                 <height>30</height>
                </size>
               </property>
@@ -267,9 +383,15 @@
             </item>
             <item>
              <widget class="QTextEdit" name="employees_slackid_textedit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
+                <width>356</width>
                 <height>30</height>
                </size>
               </property>
@@ -279,15 +401,77 @@
              <layout class="QHBoxLayout" name="employees_pushbuttons">
               <item>
                <widget class="QPushButton" name="employees_add_pushbutton">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>33</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>84</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Add</string>
                 </property>
                </widget>
               </item>
               <item>
+               <widget class="QPushButton" name="employees_update_pushbutton">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>33</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>84</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Update</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="employees_delete_pushbutton">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>33</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>84</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Delete</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="employees_refresh_pushbutton">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>33</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>84</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Refresh</string>
                 </property>
                </widget>
               </item>
