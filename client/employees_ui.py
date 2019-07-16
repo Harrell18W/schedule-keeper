@@ -1,4 +1,5 @@
 from PySide2.QtWidgets import QTableWidgetItem, QAbstractItemView
+from PySide2.QtWidgets import QHeaderView
 import re
 
 import apputils
@@ -12,35 +13,39 @@ email_re = re.compile(r'^[0-9a-z]+@[0-9a-z]+\.\w+')
 phone_re = re.compile(r'^\d{7,}$')
 slack_id_re = re.compile(r'^U[0-9A-Z]{8}$')
 
+
 def employees_tablewidget_setup(main_window):
     tw = main_window.window.employees_tablewidget
     tw.setSelectionBehavior(QAbstractItemView.SelectRows)
     tw.setSelectionMode(QAbstractItemView.SingleSelection)
     tw.setEditTriggers(QAbstractItemView.NoEditTriggers)
     tw.verticalHeader().setVisible(False)
+    tw.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
 
 def check_employee_fields(main_window, firstname, lastname,
                           email, phone, slack_id):
     if not bool(name_re.match(firstname)):
         main_window.show_error('Invalid first name: %s' %
-                               '(blank)' if len(firstname) == 0
+                               '(blank).' if len(firstname) == 0
                                else firstname)
         return False
     if not bool(name_re.match(lastname)):
         main_window.show_error('Invalid last name: %s' %
-                               '(blank)' if len(lastname) == 0
+                               '(blank).' if len(lastname) == 0
                                else lastname)
         return False
     if email and not bool(email_re.match(email)):
-        main_window.show_error('Invalid email: %s' % email)
+        main_window.show_error('Invalid email: %s.' % email)
         return False
     if phone and not bool(phone_re.match(phone)):
-        main_window.show_error('Invalid phone number: %s' % phone)
+        main_window.show_error('Invalid phone number: %s.' % phone)
         return False
     if not bool(slack_id_re.match(slack_id)):
-        main_window.show_error('Invalid Slack ID: %s' % slack_id)
+        main_window.show_error('Invalid Slack ID: %s.' % slack_id)
         return False
     return True
+
 
 def add_employee(main_window):
     firstname_te = main_window.window.employees_firstname_textedit
@@ -70,9 +75,10 @@ def add_employee(main_window):
         employee_id = apputils.str_id()
         employee = (firstname, lastname, email, phone, slack_id, employee_id)
         db.add_employee(employee)
-        refresh_employees(main_window)()
+        refresh_employees(main_window)
 
     return inner
+
 
 def delete_employee(main_window):
     tw = main_window.window.employees_tablewidget
@@ -81,14 +87,15 @@ def delete_employee(main_window):
     def inner():
         slack_id = slack_id_te.toPlainText().strip()
         if not slack_id_re.match(slack_id):
-            main_window.show_error('Invalid Slack ID: %s' % slack_id)
+            main_window.show_error('Invalid Slack ID: %s.' % slack_id)
             return
         db.delete_employee(slack_id)
-        refresh_employees(main_window)()
+        refresh_employees(main_window)
         tw.clearSelection()
         populate_employees_details(main_window)(-1, -1)
 
     return inner
+
 
 def update_employee(main_window):
     firstname_te = main_window.window.employees_firstname_textedit
@@ -115,9 +122,10 @@ def update_employee(main_window):
         phone = None if not phone else int(phone)
         employee = (firstname, lastname, email, phone, slack_id)
         db.update_employee(employee)
-        refresh_employees(main_window)()
+        refresh_employees(main_window)
 
     return inner
+
 
 def populate_employees_details(main_window):
     tw = main_window.window.employees_tablewidget
@@ -143,6 +151,7 @@ def populate_employees_details(main_window):
 
     return inner
 
+
 def refresh_employees(main_window):
     employees_tablewidget_setup(main_window)
     tw = main_window.window.employees_tablewidget
@@ -158,5 +167,7 @@ def refresh_employees(main_window):
                 text = str(text) if text else None
                 item = QTableWidgetItem(text)
                 tw.setItem(row, column, item)
+        tw.sortItems(0)
+
     inner()  # setup
     return inner

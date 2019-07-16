@@ -103,7 +103,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QTableView" name="customers_tableview">
+             <widget class="QTableWidget" name="customers_tablewidget">
               <property name="minimumSize">
                <size>
                 <width>600</width>
@@ -118,6 +118,12 @@
            <layout class="QVBoxLayout" name="customers_details">
             <item>
              <widget class="QLabel" name="customers_name_label">
+              <property name="maximumSize">
+               <size>
+                <width>356</width>
+                <height>17</height>
+               </size>
+              </property>
               <property name="text">
                <string>Name</string>
               </property>
@@ -131,21 +137,30 @@
                 <height>30</height>
                </size>
               </property>
+              <property name="placeholderText">
+               <string>Apple</string>
+              </property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="customers_nicknames_label">
+              <property name="maximumSize">
+               <size>
+                <width>356</width>
+                <height>17</height>
+               </size>
+              </property>
               <property name="text">
                <string>Nicknames</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QListView" name="customers_nicknames_listview">
+             <widget class="QListWidget" name="customers_nicknames_listwidget">
               <property name="maximumSize">
                <size>
                 <width>356</width>
-                <height>16777215</height>
+                <height>86</height>
                </size>
               </property>
              </widget>
@@ -158,6 +173,9 @@
                 <height>30</height>
                </size>
               </property>
+              <property name="placeholderText">
+               <string>APL</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -167,7 +185,7 @@
                 <property name="maximumSize">
                  <size>
                   <width>174</width>
-                  <height>16777215</height>
+                  <height>33</height>
                  </size>
                 </property>
                 <property name="text">
@@ -180,7 +198,7 @@
                 <property name="maximumSize">
                  <size>
                   <width>174</width>
-                  <height>16777215</height>
+                  <height>33</height>
                  </size>
                 </property>
                 <property name="text">
@@ -196,8 +214,8 @@
                <widget class="QPushButton" name="customers_add_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>84</width>
-                  <height>16777215</height>
+                  <width>114</width>
+                  <height>33</height>
                  </size>
                 </property>
                 <property name="text">
@@ -206,24 +224,11 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="customer_update_pushbutton">
-                <property name="maximumSize">
-                 <size>
-                  <width>84</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Update</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QPushButton" name="customers_delete_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>84</width>
-                  <height>16777215</height>
+                  <width>114</width>
+                  <height>33</height>
                  </size>
                 </property>
                 <property name="text">
@@ -235,8 +240,8 @@
                <widget class="QPushButton" name="customers_refresh_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>84</width>
-                  <height>16777215</height>
+                  <width>114</width>
+                  <height>33</height>
                  </size>
                 </property>
                 <property name="text">

@@ -20,3 +20,13 @@ get_employees: str = 'SELECT * FROM Employees'
 
 employee_from_slack_id: str = '''SELECT * FROM Employees
 WHERE slackUserId = %s'''
+
+add_customer: str = '''INSERT INTO Customers
+(name, customShorthands, id)
+VALUES
+(%s, %s, %s)'''
+
+delete_customer: str = '''DELETE FROM Customers
+WHERE name = %s'''
+
+get_customers: str = 'SELECT * FROM Customers'

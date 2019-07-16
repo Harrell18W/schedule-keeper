@@ -5,6 +5,7 @@ from PySide2.QtCore import QFile, SIGNAL
 
 import slots
 
+
 class MainWindow(object):
 
     def __init__(self):
@@ -33,6 +34,7 @@ class MainWindow(object):
 
     def hide_error(self):
         self.error.hide()
+
 
 if __name__ == '__main__':
     main = MainWindow()
