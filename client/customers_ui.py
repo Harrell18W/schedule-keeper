@@ -3,7 +3,6 @@ from PySide2.QtWidgets import QAbstractItemView, QHeaderView
 import re
 
 import apputils
-import database as db
 
 customers_header_items = ['Name', 'Nicknames', 'ID']
 
@@ -121,7 +120,7 @@ def add_customer(main_window):
             main_window.show_error('No name given for customer.')
             return
         nicknames = get_nicknames(main_window)
-        existing_customers = db.get_customers()
+        existing_customers = main_window.db.get_customers()
         for customer in existing_customers:
             if customer[0].upper() == name.upper():
                 msg = 'Customer %s already exists.' % customer[0]
@@ -144,7 +143,7 @@ def add_customer(main_window):
         nicknames = str(nicknames).replace('\'', '"')
         customer_id = apputils.str_id()
         customer = (name, nicknames, customer_id)
-        db.add_customer(customer)
+        main_window.db.add_customer(customer)
         refresh_customers(main_window)
 
     return inner
@@ -158,7 +157,7 @@ def delete_customer(main_window):
         if not name:
             main_window.show_error('No name given.')
             return
-        db.delete_customer(name)
+        main_window.db.delete_customer(name)
         refresh_customers(main_window)
         populate_customers_details(main_window)(-1, -1)
 
@@ -170,7 +169,7 @@ def refresh_customers(main_window):
     customers_tablewidget_setup(main_window)
 
     def inner():
-        customers = db.get_customers()
+        customers = main_window.db.get_customers()
         tw.setColumnCount(len(customers_header_items))
         tw.setRowCount(len(customers))
         tw.setHorizontalHeaderLabels(customers_header_items)

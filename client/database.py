@@ -1,93 +1,84 @@
 import mysql.connector
-import os
 
 import queries
 
-db = mysql.connector.connect(user=os.environ['SK_CLIENT_DB_USER'],
-                             password=os.environ['SK_CLIENT_DB_PASSWORD'],
-                             host='localhost',
-                             database='sk_db')
 
+class ScheduleKeeperDatabase(object):
 
-def add_employee(employee):
-    new_query = db.cursor()
-    new_query.execute(queries.add_employee, employee)
-    db.commit()
+    def __init__(self, host, username, password):
+        self.db = mysql.connector.connect(user=username, password=password,
+                                          host=host, database='sk_db')
 
+    def close_connection(self):
+        self.db.close()
 
-def delete_employee(slack_user_id):
-    new_query = db.cursor()
-    new_query.execute(queries.delete_employee, (slack_user_id,))
-    db.commit()
+    def add_employee(self, employee):
+        new_query = self.db.cursor()
+        new_query.execute(queries.add_employee, employee)
+        self.db.commit()
 
+    def delete_employee(self, slack_user_id):
+        new_query = self.db.cursor()
+        new_query.execute(queries.delete_employee, (slack_user_id,))
+        self.db.commit()
 
-def update_employee(employee):
-    new_query = db.cursor()
-    new_query.execute(queries.update_employee, employee)
-    db.commit()
+    def update_employee(self, employee):
+        new_query = self.db.cursor()
+        new_query.execute(queries.update_employee, employee)
+        self.db.commit()
 
+    def get_employees(self):
+        new_query = self.db.cursor()
+        new_query.execute(queries.get_employees)
+        return list(new_query)
 
-def get_employees():
-    new_query = db.cursor()
-    new_query.execute(queries.get_employees)
-    return list(new_query)
+    def get_employee(self, identifier):
+        if identifier[0] == 'U':
+            query = queries.employee_from_slack_id
+        else:
+            query = queries.employee_from_id
+        new_query = self.db.cursor()
+        new_query.execute(query, (identifier,))
+        result = list(new_query)
+        return result[0] if len(result) else None
 
+    def add_customer(self, customer):
+        new_query = self.db.cursor()
+        new_query.execute(queries.add_customer, customer)
+        self.db.commit()
 
-def get_employee(identifier):
-    if identifier[0] == 'U':
-        query = queries.employee_from_slack_id
-    else:
-        query = queries.employee_from_id
-    new_query = db.cursor()
-    new_query.execute(query, (identifier,))
-    result = list(new_query)
-    return result[0] if len(result) else None
+    def get_customer(self, customer_id):
+        new_query = self.db.cursor()
+        new_query.execute(queries.get_customer, (customer_id,))
+        result = list(new_query)
+        return result[0] if len(result) else None
 
+    def delete_customer(self, name):
+        new_query = self.db.cursor()
+        new_query.execute(queries.delete_customer, (name,))
+        self.db.commit()
 
-def add_customer(customer):
-    new_query = db.cursor()
-    new_query.execute(queries.add_customer, customer)
-    db.commit()
+    def get_customers(self):
+        new_query = self.db.cursor()
+        new_query.execute(queries.get_customers)
+        return list(new_query)
 
+    def delete_active_clock(self, clock_id):
+        new_query = self.db.cursor()
+        new_query.execute(queries.delete_active_clock, (clock_id,))
+        self.db.commit()
 
-def get_customer(customer_id):
-    new_query = db.cursor()
-    new_query.execute(queries.get_customer, (customer_id,))
-    result = list(new_query)
-    return result[0] if len(result) else None
+    def get_active_clocks(self):
+        new_query = self.db.cursor()
+        new_query.execute(queries.get_active_clocks)
+        return list(new_query)
 
+    def delete_finished_clock(self, clock_id):
+        new_query = self.db.cursor()
+        new_query.execute(queries.delete_finished_clock, (clock_id,))
+        self.db.commit()
 
-def delete_customer(name):
-    new_query = db.cursor()
-    new_query.execute(queries.delete_customer, (name,))
-    db.commit()
-
-
-def get_customers():
-    new_query = db.cursor()
-    new_query.execute(queries.get_customers)
-    return list(new_query)
-
-
-def delete_active_clock(clock_id):
-    new_query = db.cursor()
-    new_query.execute(queries.delete_active_clock, (clock_id,))
-    db.commit()
-
-
-def get_active_clocks():
-    new_query = db.cursor()
-    new_query.execute(queries.get_active_clocks)
-    return list(new_query)
-
-
-def delete_finished_clock(clock_id):
-    new_query = db.cursor()
-    new_query.execute(queries.delete_finished_clock, (clock_id,))
-    db.commit()
-
-
-def get_finished_clocks():
-    new_query = db.cursor()
-    new_query.execute(queries.get_finished_clocks)
-    return list(new_query)
+    def get_finished_clocks(self):
+        new_query = self.db.cursor()
+        new_query.execute(queries.get_finished_clocks)
+        return list(new_query)

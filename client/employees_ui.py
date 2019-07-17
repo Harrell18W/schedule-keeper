@@ -3,7 +3,6 @@ from PySide2.QtWidgets import QHeaderView
 import re
 
 import apputils
-import database as db
 
 employees_header_items = ['First Name', 'Last Name', 'Email', 'Phone',
                           'Slack User ID', 'ID']
@@ -64,7 +63,7 @@ def add_employee(main_window):
                                      phone, slack_id):
             return
 
-        if db.get_employee(slack_id):
+        if main_window.db.get_employee(slack_id):
             msg = 'An employee with Slack ID %s ' % slack_id
             msg += 'alread exists in the DB.'
             main_window.show_error(msg)
@@ -74,7 +73,7 @@ def add_employee(main_window):
         phone = None if not phone else int(phone)
         employee_id = apputils.str_id()
         employee = (firstname, lastname, email, phone, slack_id, employee_id)
-        db.add_employee(employee)
+        main_window.db.add_employee(employee)
         refresh_employees(main_window)
 
     return inner
@@ -89,7 +88,7 @@ def delete_employee(main_window):
         if not slack_id_re.match(slack_id):
             main_window.show_error('Invalid Slack ID: %s.' % slack_id)
             return
-        db.delete_employee(slack_id)
+        main_window.db.delete_employee(slack_id)
         refresh_employees(main_window)
         tw.clearSelection()
         populate_employees_details(main_window)(-1, -1)
@@ -113,7 +112,7 @@ def update_employee(main_window):
         if not check_employee_fields(main_window, firstname, lastname, email,
                                      phone, slack_id):
             return
-        if not db.get_employee(slack_id):
+        if not main_window.db.get_employee(slack_id):
             msg = 'Employee %s %s not in database. ' % (firstname, lastname)
             msg += 'Please add them before updating their entry.'
             main_window.show_error(msg)
@@ -121,7 +120,7 @@ def update_employee(main_window):
         email = None if not email else email
         phone = None if not phone else int(phone)
         employee = (firstname, lastname, email, phone, slack_id)
-        db.update_employee(employee)
+        main_window.db.update_employee(employee)
         refresh_employees(main_window)
 
     return inner
@@ -159,7 +158,7 @@ def refresh_employees(main_window):
     tw.setHorizontalHeaderLabels(employees_header_items)
 
     def inner():
-        employees = db.get_employees()
+        employees = main_window.db.get_employees()
         tw.setRowCount(len(employees))
         for row in range(0, len(employees)):
             for column in range(0, len(employees[row])):

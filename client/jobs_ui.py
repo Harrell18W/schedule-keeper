@@ -2,7 +2,6 @@ from PySide2.QtWidgets import QTableWidgetItem, QHeaderView
 from PySide2.QtWidgets import QAbstractItemView
 
 import apputils
-import database as db
 
 active_jobs_header_items = ['Customer', 'Employee', 'Started', 'Time Elapsed']
 active_jobs_header_items += ['ID']
@@ -32,17 +31,17 @@ def refresh_jobs(main_window):
     finished_tw.setHorizontalHeaderLabels(finished_jobs_header_items)
 
     def inner():
-        active_jobs = db.get_active_clocks()
+        active_jobs = main_window.db.get_active_clocks()
         active_tw.setRowCount(len(active_jobs))
         for row in range(0, len(active_jobs)):
             job = active_jobs[row]
-            customer = db.get_customer(job[1])
+            customer = main_window.db.get_customer(job[1])
             if customer:
                 customer_item = QTableWidgetItem(customer[0])
             else:
                 customer_item = QTableWidgetItem('Customer not found')
             active_tw.setItem(row, 0, customer_item)
-            employee = db.get_employee(job[0])
+            employee = main_window.db.get_employee(job[0])
             if employee:
                 employee_str = employee[0] + ' ' + employee[1]
                 employee_item = QTableWidgetItem(employee_str)
@@ -56,17 +55,17 @@ def refresh_jobs(main_window):
             active_tw.setItem(row, 4, QTableWidgetItem(job[3]))
         active_tw.sortItems(0)
 
-        finished_jobs = db.get_finished_clocks()
+        finished_jobs = main_window.db.get_finished_clocks()
         finished_tw.setRowCount(len(finished_jobs))
         for row in range(0, len(finished_jobs)):
             job = finished_jobs[row]
-            customer = db.get_customer(job[1])
+            customer = main_window.db.get_customer(job[1])
             if customer:
                 customer_item = QTableWidgetItem(customer[0])
             else:
                 customer_item = QTableWidgetItem('Customer not found')
             finished_tw.setItem(row, 0, customer_item)
-            employee = db.get_employee(job[0])
+            employee = main_window.db.get_employee(job[0])
             if employee:
                 employee_str = employee[0] + ' ' + employee[1]
                 employee_item = QTableWidgetItem(employee_str)
@@ -96,7 +95,7 @@ def delete_active_job(main_window):
             main_window.show_error('No job selected.')
             return
         job_id = tw.item(row, 4).text()
-        db.delete_active_clock(job_id)
+        main_window.db.delete_active_clock(job_id)
         refresh_jobs(main_window)
 
     return inner
@@ -111,7 +110,7 @@ def delete_finished_job(main_window):
             main_window.show_error('No job selected')
             return
         job_id = tw.item(row, 5).text()
-        db.delete_finished_clock(job_id)
+        main_window.db.delete_finished_clock(job_id)
         refresh_jobs(main_window)
 
     return inner
