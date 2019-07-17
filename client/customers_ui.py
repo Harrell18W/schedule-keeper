@@ -30,9 +30,9 @@ def parse_nicknames(nicknames):
 
 def populate_customers_details(main_window):
     tw = main_window.window.customers_tablewidget
-    name_te = main_window.window.customers_name_textedit
+    name_te = main_window.window.customers_name_lineedit
     nicknames_lw = main_window.window.customers_nicknames_listwidget
-    nicknames_te = main_window.window.customers_nicknames_textedit
+    nicknames_te = main_window.window.customers_nicknames_lineedit
 
     def inner(row, column):
         if row == -1 and column == -1:
@@ -61,17 +61,17 @@ def get_nicknames(main_window):
 
 def add_nickname(main_window):
     nicknames_lw = main_window.window.customers_nicknames_listwidget
-    name_te = main_window.window.customers_name_textedit
-    nicknames_te = main_window.window.customers_nicknames_textedit
+    name_te = main_window.window.customers_name_lineedit
+    nicknames_te = main_window.window.customers_nicknames_lineedit
 
     def inner():
-        name = name_te.toPlainText()
+        name = name_te.text()
         if not name:
             msg = 'No customer specified. Please either select one '
             msg += 'or add a name in the box.'
             main_window.show_error(msg)
             return
-        nickname = nicknames_te.toPlainText().upper().strip()
+        nickname = nicknames_te.text().upper().strip()
         if not nickname:
             main_window.show_error('No nickname given.')
             return
@@ -99,9 +99,9 @@ def delete_nickname(main_window):
     return inner
 
 
-def populate_nickname_textedit(main_window):
+def populate_nickname_lineedit(main_window):
     nicknames_lw = main_window.window.customers_nicknames_listwidget
-    nicknames_te = main_window.window.customers_nicknames_textedit
+    nicknames_te = main_window.window.customers_nicknames_lineedit
 
     def inner():
         item = nicknames_lw.currentItem()
@@ -112,10 +112,10 @@ def populate_nickname_textedit(main_window):
 
 
 def add_customer(main_window):
-    name_te = main_window.window.customers_name_textedit
+    name_te = main_window.window.customers_name_lineedit
 
     def inner():
-        name = name_te.toPlainText().strip()
+        name = name_te.text().strip()
         if not name:
             main_window.show_error('No name given for customer.')
             return
@@ -150,10 +150,10 @@ def add_customer(main_window):
 
 
 def delete_customer(main_window):
-    name_te = main_window.window.customers_name_textedit
+    name_te = main_window.window.customers_name_lineedit
 
     def inner():
-        name = name_te.toPlainText().strip()
+        name = name_te.text().strip()
         if not name:
             main_window.show_error('No name given.')
             return

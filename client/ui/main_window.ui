@@ -144,11 +144,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="customers_name_textedit">
+             <widget class="QLineEdit" name="customers_name_lineedit">
+              <property name="minimumSize">
+               <size>
+                <width>356</width>
+                <height>31</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>356</width>
-                <height>30</height>
+                <height>31</height>
                </size>
               </property>
               <property name="placeholderText">
@@ -180,11 +186,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="customers_nicknames_textedit">
+             <widget class="QLineEdit" name="customers_nicknames_lineedit">
+              <property name="minimumSize">
+               <size>
+                <width>356</width>
+                <height>31</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
                 <width>356</width>
-                <height>30</height>
+                <height>31</height>
                </size>
               </property>
               <property name="placeholderText">
@@ -309,17 +321,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="employees_firstname_textedit">
+             <widget class="QLineEdit" name="employees_firstname_lineedit">
               <property name="minimumSize">
                <size>
-                <width>0</width>
-                <height>30</height>
+                <width>356</width>
+                <height>31</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>356</width>
-                <height>30</height>
+                <height>31</height>
                </size>
               </property>
               <property name="placeholderText">
@@ -335,17 +347,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="employees_lastname_textedit">
+             <widget class="QLineEdit" name="employees_lastname_lineedit">
               <property name="minimumSize">
                <size>
-                <width>0</width>
-                <height>30</height>
+                <width>356</width>
+                <height>31</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>356</width>
-                <height>30</height>
+                <height>31</height>
                </size>
               </property>
               <property name="placeholderText">
@@ -361,10 +373,10 @@
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="employees_email_textedit">
+             <widget class="QLineEdit" name="employees_email_lineedit">
               <property name="minimumSize">
                <size>
-                <width>0</width>
+                <width>356</width>
                 <height>30</height>
                </size>
               </property>
@@ -374,8 +386,11 @@
                 <height>30</height>
                </size>
               </property>
+              <property name="text">
+               <string/>
+              </property>
               <property name="placeholderText">
-               <string>Optional</string>
+               <string>johndoe@techauthorityllc.com (Optional)</string>
               </property>
              </widget>
             </item>
@@ -387,21 +402,21 @@
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="employees_phone_textedit">
+             <widget class="QLineEdit" name="employees_phone_lineedit">
               <property name="minimumSize">
                <size>
-                <width>0</width>
-                <height>30</height>
+                <width>356</width>
+                <height>31</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>356</width>
-                <height>30</height>
+                <height>31</height>
                </size>
               </property>
               <property name="placeholderText">
-               <string>Optional</string>
+               <string>11234567890 (Optional)</string>
               </property>
              </widget>
             </item>
@@ -413,21 +428,18 @@
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="employees_slackid_textedit">
+             <widget class="QLineEdit" name="employees_slackid_lineedit">
               <property name="minimumSize">
                <size>
-                <width>0</width>
-                <height>30</height>
+                <width>356</width>
+                <height>31</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>356</width>
-                <height>30</height>
+                <height>31</height>
                </size>
-              </property>
-              <property name="tabStopDistance">
-               <double>78.000000000000000</double>
               </property>
               <property name="placeholderText">
                <string>UABC12DEF</string>

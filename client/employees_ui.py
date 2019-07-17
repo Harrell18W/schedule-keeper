@@ -47,18 +47,18 @@ def check_employee_fields(main_window, firstname, lastname,
 
 
 def add_employee(main_window):
-    firstname_te = main_window.window.employees_firstname_textedit
-    lastname_te = main_window.window.employees_lastname_textedit
-    email_te = main_window.window.employees_email_textedit
-    phone_te = main_window.window.employees_phone_textedit
-    slack_id_te = main_window.window.employees_slackid_textedit
+    firstname_te = main_window.window.employees_firstname_lineedit
+    lastname_te = main_window.window.employees_lastname_lineedit
+    email_te = main_window.window.employees_email_lineedit
+    phone_te = main_window.window.employees_phone_lineedit
+    slack_id_te = main_window.window.employees_slackid_lineedit
 
     def inner():
-        firstname = firstname_te.toPlainText().strip()
-        lastname = lastname_te.toPlainText().strip()
-        email = email_te.toPlainText().strip()
-        phone = phone_te.toPlainText().strip()
-        slack_id = slack_id_te.toPlainText().strip()
+        firstname = firstname_te.text().strip()
+        lastname = lastname_te.text().strip()
+        email = email_te.text().strip()
+        phone = phone_te.text().strip()
+        slack_id = slack_id_te.text().strip()
         if not check_employee_fields(main_window, firstname, lastname, email,
                                      phone, slack_id):
             return
@@ -81,13 +81,10 @@ def add_employee(main_window):
 
 def delete_employee(main_window):
     tw = main_window.window.employees_tablewidget
-    slack_id_te = main_window.window.employees_slackid_textedit
+    slack_id_te = main_window.window.employees_slackid_lineedit
 
     def inner():
-        slack_id = slack_id_te.toPlainText().strip()
-        if not slack_id_re.match(slack_id):
-            main_window.show_error('Invalid Slack ID: %s.' % slack_id)
-            return
+        slack_id = slack_id_te.text().strip()
         main_window.db.delete_employee(slack_id)
         refresh_employees(main_window)
         tw.clearSelection()
@@ -97,18 +94,18 @@ def delete_employee(main_window):
 
 
 def update_employee(main_window):
-    firstname_te = main_window.window.employees_firstname_textedit
-    lastname_te = main_window.window.employees_lastname_textedit
-    email_te = main_window.window.employees_email_textedit
-    phone_te = main_window.window.employees_phone_textedit
-    slack_id_te = main_window.window.employees_slackid_textedit
+    firstname_te = main_window.window.employees_firstname_lineedit
+    lastname_te = main_window.window.employees_lastname_lineedit
+    email_te = main_window.window.employees_email_lineedit
+    phone_te = main_window.window.employees_phone_lineedit
+    slack_id_te = main_window.window.employees_slackid_lineedit
 
     def inner():
-        firstname = firstname_te.toPlainText().strip()
-        lastname = lastname_te.toPlainText().strip()
-        email = email_te.toPlainText().strip()
-        phone = phone_te.toPlainText().strip()
-        slack_id = slack_id_te.toPlainText().strip()
+        firstname = firstname_te.text().strip()
+        lastname = lastname_te.text().strip()
+        email = email_te.text().strip()
+        phone = phone_te.text().strip()
+        slack_id = slack_id_te.text().strip()
         if not check_employee_fields(main_window, firstname, lastname, email,
                                      phone, slack_id):
             return
@@ -128,11 +125,11 @@ def update_employee(main_window):
 
 def populate_employees_details(main_window):
     tw = main_window.window.employees_tablewidget
-    firstname_te = main_window.window.employees_firstname_textedit
-    lastname_te = main_window.window.employees_lastname_textedit
-    email_te = main_window.window.employees_email_textedit
-    phone_te = main_window.window.employees_phone_textedit
-    slack_id_te = main_window.window.employees_slackid_textedit
+    firstname_te = main_window.window.employees_firstname_lineedit
+    lastname_te = main_window.window.employees_lastname_lineedit
+    email_te = main_window.window.employees_email_lineedit
+    phone_te = main_window.window.employees_phone_lineedit
+    slack_id_te = main_window.window.employees_slackid_lineedit
 
     def inner(row, column):
         if row == -1 and column == -1:
