@@ -18,6 +18,9 @@ WHERE slackUserId = %s'''
 
 get_employees: str = 'SELECT * FROM Employees'
 
+employee_from_id: str = '''SELECT * FROM Employees
+WHERE id = %s'''
+
 employee_from_slack_id: str = '''SELECT * FROM Employees
 WHERE slackUserId = %s'''
 
@@ -26,7 +29,20 @@ add_customer: str = '''INSERT INTO Customers
 VALUES
 (%s, %s, %s)'''
 
+get_customer: str = '''SELECT * FROM Customers
+WHERE id = %s'''
+
 delete_customer: str = '''DELETE FROM Customers
 WHERE name = %s'''
 
 get_customers: str = 'SELECT * FROM Customers'
+
+delete_active_clock: str = '''DELETE FROM ActiveClocks
+WHERE id = %s'''
+
+get_active_clocks: str = 'SELECT * FROM ActiveClocks'
+
+delete_finished_clock: str = '''DELETE FROM FinishedClocks
+WHERE id = %s'''
+
+get_finished_clocks: str = 'SELECT * FROM FinishedClocks'

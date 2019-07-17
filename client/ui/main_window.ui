@@ -44,41 +44,55 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QLabel" name="active_jobs_label">
+         <widget class="QLabel" name="activejobs_label">
           <property name="text">
            <string>Active Jobs</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QTableView" name="activejobs_tableview"/>
+         <widget class="QTableWidget" name="activejobs_tablewidget"/>
         </item>
         <item>
-         <widget class="QPushButton" name="delete_selected_active_jobs_pushbutton">
+         <widget class="QPushButton" name="delete_selected_activejobs_pushbutton">
           <property name="text">
            <string>Delete Selected</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="Line" name="jobs_line">
+         <widget class="Line" name="jobs_line_top">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="finished_jobs_label">
+         <widget class="QPushButton" name="jobs_refresh_all_pushbutton">
+          <property name="text">
+           <string>Refresh All</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="jobs_line_bottom">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="finishedjobs_label">
           <property name="text">
            <string>Finished Jobs</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QTableView" name="finished_jobs_tableview"/>
+         <widget class="QTableWidget" name="finishedjobs_tablewidget"/>
         </item>
         <item>
-         <widget class="QPushButton" name="delete_selected_finished_jobs_pushbutton">
+         <widget class="QPushButton" name="delete_selected_finishedjobs_pushbutton">
           <property name="text">
            <string>Delete Selected</string>
           </property>
@@ -505,11 +519,6 @@
          </layout>
         </item>
        </layout>
-      </widget>
-      <widget class="QWidget" name="settings_tab">
-       <attribute name="title">
-        <string>Settings</string>
-       </attribute>
       </widget>
      </widget>
     </item>

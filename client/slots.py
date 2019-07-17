@@ -1,12 +1,13 @@
 from PySide2.QtCore import SIGNAL, QObject
 
+import jobs_ui
 import customers_ui
 import employees_ui
 
 widgets = [
     {
         'name': 'customers_tablewidget',
-        'signal': 'cellClicked(int,int)',
+        'signal': 'currentCellChanged(int,int,int,int)',
         'fn': customers_ui.populate_customers_details
     },
     {
@@ -36,7 +37,7 @@ widgets = [
     },
     {
         'name': 'employees_tablewidget',
-        'signal': 'cellClicked(int,int)',
+        'signal': 'currentCellChanged(int,int,int,int)',
         'fn': employees_ui.populate_employees_details
     },
     {
@@ -58,6 +59,21 @@ widgets = [
         'name': 'employees_refresh_pushbutton',
         'signal': 'clicked()',
         'fn': employees_ui.refresh_employees
+    },
+    {
+        'name': 'jobs_refresh_all_pushbutton',
+        'signal': 'clicked()',
+        'fn': jobs_ui.refresh_jobs
+    },
+    {
+        'name': 'delete_selected_activejobs_pushbutton',
+        'signal': 'clicked()',
+        'fn': jobs_ui.delete_active_job
+    },
+    {
+        'name': 'delete_selected_finishedjobs_pushbutton',
+        'signal': 'clicked()',
+        'fn': jobs_ui.delete_finished_job
     }
 ]
 

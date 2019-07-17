@@ -64,7 +64,7 @@ def add_employee(main_window):
                                      phone, slack_id):
             return
 
-        if db.employee_from_slack_id(slack_id):
+        if db.get_employee(slack_id):
             msg = 'An employee with Slack ID %s ' % slack_id
             msg += 'alread exists in the DB.'
             main_window.show_error(msg)
@@ -113,7 +113,7 @@ def update_employee(main_window):
         if not check_employee_fields(main_window, firstname, lastname, email,
                                      phone, slack_id):
             return
-        if not db.employee_from_slack_id(slack_id):
+        if not db.get_employee(slack_id):
             msg = 'Employee %s %s not in database. ' % (firstname, lastname)
             msg += 'Please add them before updating their entry.'
             main_window.show_error(msg)
@@ -155,12 +155,12 @@ def populate_employees_details(main_window):
 def refresh_employees(main_window):
     employees_tablewidget_setup(main_window)
     tw = main_window.window.employees_tablewidget
+    tw.setColumnCount(len(employees_header_items))
+    tw.setHorizontalHeaderLabels(employees_header_items)
 
     def inner():
         employees = db.get_employees()
-        tw.setColumnCount(len(employees_header_items))
         tw.setRowCount(len(employees))
-        tw.setHorizontalHeaderLabels(employees_header_items)
         for row in range(0, len(employees)):
             for column in range(0, len(employees[row])):
                 text = employees[row][column]
