@@ -1,0 +1,24 @@
+[Unit]
+Description=Keep track of employee hours - server
+After=network.target
+
+[Service]
+# Leave port var commented for 57678
+#Environment=SK_PORT=
+Environment=SK_DB_HOST=
+Environment=SK_DB_USER=
+Environment=SK_DB_PASSWORD=
+Environment=SK_SLACK_SIGNING_SECRET=
+Environment=SK_SLACK_BOT_TOKEN=
+
+Type=simple
+User=skserver
+
+# Change these paths if using a different service user name
+WorkingDirectory=/home/skserver/schedule-keeper/server
+ExecStart=/usr/bin/node /home/skserver/schedule-keeper/server/server.js
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
