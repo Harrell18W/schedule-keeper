@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha",
-    "devstart": "nodemon server.js"
+    "devstart": "nodemon server.js",
+    "start": "node server.js"
   },
   "author": "William Harrell",
   "license": "ISC",

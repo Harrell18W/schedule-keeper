@@ -13,7 +13,7 @@ function escapeArgs(args) {
 
 // Login to MySQL db
 var mysqlConnection = mysql.createConnection({
-    host: 'localhost',
+    host: process.env.SK_DB_HOST,
     user: process.env.SK_DB_USER,
     password: process.env.SK_DB_PASSWORD,
     database: 'sk_db'
