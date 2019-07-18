@@ -94,6 +94,7 @@ def delete_employee(main_window):
 
 
 def update_employee(main_window):
+    tw = main_window.window.employees_tablewidget
     firstname_te = main_window.window.employees_firstname_lineedit
     lastname_te = main_window.window.employees_lastname_lineedit
     email_te = main_window.window.employees_email_lineedit
@@ -109,14 +110,19 @@ def update_employee(main_window):
         if not check_employee_fields(main_window, firstname, lastname, email,
                                      phone, slack_id):
             return
-        if not main_window.db.get_employee(slack_id):
-            msg = 'Employee %s %s not in database. ' % (firstname, lastname)
-            msg += 'Please add them before updating their entry.'
-            main_window.show_error(msg)
+        row = tw.currentRow()
+        if row < 0:
+            main_window.show_error('No employee selected.')
             return
+        employee_id = tw.item(row, 5).text()
+        # if not main_window.db.get_employee(slack_id):
+        #     msg = 'Employee %s %s not in database. ' % (firstname, lastname)
+        #     msg += 'Please add them before updating their entry.'
+        #     main_window.show_error(msg)
+        #     return
         email = None if not email else email
         phone = None if not phone else int(phone)
-        employee = (firstname, lastname, email, phone, slack_id)
+        employee = (firstname, lastname, email, phone, slack_id, employee_id)
         main_window.db.update_employee(employee)
         refresh_employees(main_window)
 

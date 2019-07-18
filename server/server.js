@@ -6,12 +6,13 @@ const commands = require('./commands');
 
 // Create Slack client
 const app = new App({
-    token: process.env.SLACK_BOT_TOKEN,
-    signingSecret: process.env.SLACK_SIGNING_SECRET
+    token: process.env.SK_SLACK_BOT_TOKEN,
+    signingSecret: process.env.SK_SLACK_SIGNING_SECRET
 });
 
 app.command('/clockin', commands.clockinResponse);
 app.command('/clockout', commands.clockoutResponse);
+app.command('/register', commands.register);
 
 app.action(/^customer_select_[0-9a-z]{32}$/, actions.clockinRequestResponse);
 app.action(/^clockin_request_cancel_[0-9a-z]{32}$/, actions.clockinRequestCancel);
@@ -20,7 +21,7 @@ app.action(/^clockin_cancel_[0-9a-z]{32}$/, actions.clockoutCancel);
 app.action(/^session_cancel_[0-9a-z]{32}$/, actions.sessionCancel);
 
 async function slack_start() {
-    await app.start(process.env.PORT || 3500);
+    await app.start(process.env.SK_PORT || 57678);
 
     console.log('Slack client started');
 }

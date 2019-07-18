@@ -7,7 +7,7 @@ class ScheduleKeeperDatabase(object):
 
     def __init__(self, host, username, password):
         self.db = mysql.connector.connect(user=username, password=password,
-                                          host=host, database='sk_db')
+                                          host=host, database='sk_db', autocommit=True)
 
     def close_connection(self):
         self.db.close()
@@ -15,17 +15,14 @@ class ScheduleKeeperDatabase(object):
     def add_employee(self, employee):
         new_query = self.db.cursor()
         new_query.execute(queries.add_employee, employee)
-        self.db.commit()
 
     def delete_employee(self, slack_user_id):
         new_query = self.db.cursor()
         new_query.execute(queries.delete_employee, (slack_user_id,))
-        self.db.commit()
 
     def update_employee(self, employee):
         new_query = self.db.cursor()
         new_query.execute(queries.update_employee, employee)
-        self.db.commit()
 
     def get_employees(self):
         new_query = self.db.cursor()
@@ -45,7 +42,6 @@ class ScheduleKeeperDatabase(object):
     def add_customer(self, customer):
         new_query = self.db.cursor()
         new_query.execute(queries.add_customer, customer)
-        self.db.commit()
 
     def get_customer(self, customer_id):
         new_query = self.db.cursor()
@@ -56,7 +52,6 @@ class ScheduleKeeperDatabase(object):
     def delete_customer(self, name):
         new_query = self.db.cursor()
         new_query.execute(queries.delete_customer, (name,))
-        self.db.commit()
 
     def get_customers(self):
         new_query = self.db.cursor()
@@ -66,17 +61,17 @@ class ScheduleKeeperDatabase(object):
     def delete_active_clock(self, clock_id):
         new_query = self.db.cursor()
         new_query.execute(queries.delete_active_clock, (clock_id,))
-        self.db.commit()
 
     def get_active_clocks(self):
         new_query = self.db.cursor()
         new_query.execute(queries.get_active_clocks)
-        return list(new_query)
+        result = list(new_query)
+        print(result)
+        return result
 
     def delete_finished_clock(self, clock_id):
         new_query = self.db.cursor()
         new_query.execute(queries.delete_finished_clock, (clock_id,))
-        self.db.commit()
 
     def get_finished_clocks(self):
         new_query = self.db.cursor()

@@ -53,7 +53,6 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
         start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     }
     if (args.customer) {
-        console.log('id: ' + command.user_id);
         apputils.clockin(say, command.user_id, args.customer, start, id);
         return;
     }
@@ -103,6 +102,7 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
     if (!employeeId) return;
 
     var activeClock = await apputils.getActiveClockFromEmployeeId(say, command.user_id, employeeId);
+    if (!activeClock) return;
 
     if (activeClock.start > finished) {
         say(`<@${command.user_id}> The clockout time you've specified is before the time at which you started`);
@@ -119,4 +119,30 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
     var timeDifference = time.dateDifference(activeClock.start, finished);
 
     say({ blocks: blocks.clockoutBlocks(customerName, hrStart, hrFinished, timeDifference, activeClock.id) });
+};
+
+module.exports.register = async function({ command, ack, say }) {
+    ack();
+
+    var slackId = command.user_id;
+    var slackUsername = command.user_name;
+    var id = crypto.randomBytes(16).toString('hex');
+
+    try {
+        await db.registerEmployee(slackUsername, slackId, id);
+    } catch (err) {
+        if (err instanceof errors.EntryAlreadyExistsError) {
+            if (err.message.includes('registered')) {
+                say(`<@${slackId}> You are already registered`);
+                return;
+            } else if (err.message.includes('register')) {
+                say(`<@${slackId}> You have already tried to register`);
+                return;
+            } else
+                throw err;
+        }
+    }
+    
+    say(`<@${slackId}> You have been registered. You will not be able to ` +
+        'use the bot until you have been verified.');
 };

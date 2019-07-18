@@ -31,7 +31,9 @@ def refresh_jobs(main_window):
     finished_tw.setHorizontalHeaderLabels(finished_jobs_header_items)
 
     def inner():
+        print('yeet')
         active_jobs = main_window.db.get_active_clocks()
+        print(active_jobs)
         active_tw.setRowCount(len(active_jobs))
         for row in range(0, len(active_jobs)):
             job = active_jobs[row]
@@ -56,6 +58,7 @@ def refresh_jobs(main_window):
         active_tw.sortItems(0)
 
         finished_jobs = main_window.db.get_finished_clocks()
+        print(finished_jobs)
         finished_tw.setRowCount(len(finished_jobs))
         for row in range(0, len(finished_jobs)):
             job = finished_jobs[row]

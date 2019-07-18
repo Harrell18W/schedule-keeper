@@ -67,6 +67,18 @@ module.exports.getEmployeeIdFromSlackUserId = async function(slackUserId) {
     return results[0].id;
 };
 
+module.exports.registerEmployee = async function(slackUsername, slackUserId, id) {
+    [slackUsername, slackUserId, id] = escapeArgs(arguments);
+    if ((await query(queries.getEmployeeId(slackUserId))).length > 0) {
+        throw new errors.EntryAlreadyExistsError(`Employee with Slack ID ${slackUserId} already registered`);
+    }
+    slackUserId = '\'R' + slackUserId.substring(2);
+    if ((await query(queries.getEmployeeId(slackUserId))).length > 0) {
+        throw new errors.EntryAlreadyExistsError(`Employee with Slack ID ${slackUserId} has already tried to register`);
+    }
+    query(queries.registerEmployee(slackUsername, slackUserId, id));
+};
+
 module.exports.getCustomerFromId = async function(id) {
     [id] = escapeArgs(arguments);
     var results = await query(queries.getCustomerFromId(id));
@@ -94,7 +106,7 @@ module.exports.searchCustomers = async function(identifier) {
     identifier = identifier.toLowerCase().substring(1, identifier.length - 1);
     var results = await this.getCustomers();
     for (var customer of results) {
-        if (identifier == customer.name.toLowerCase()|| customer.customShorthands.indexOf(identifier.toLowerCase()) > -1) {
+        if (identifier == customer.name.toLowerCase() || customer.customShorthands.indexOf(identifier.toUpperCase()) > -1) {
             return customer;
         }
     }

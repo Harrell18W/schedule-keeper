@@ -13,8 +13,9 @@ update_employee: str = '''UPDATE Employees SET
 firstName = %s,
 lastName = %s,
 email = %s,
-phone = %s
-WHERE slackUserId = %s'''
+phone = %s,
+slackUserId = %s
+WHERE id = %s'''
 
 get_employees: str = 'SELECT * FROM Employees'
 

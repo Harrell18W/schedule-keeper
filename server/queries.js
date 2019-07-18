@@ -33,6 +33,13 @@ module.exports.getEmployeeId = function(slackUserId) {
     return `SELECT id FROM Employees WHERE slackUserId = ${slackUserId};`;
 };
 
+module.exports.registerEmployee = function(slackUsername, slackUserId, id) {
+    return 'INSERT INTO Employees ' +
+           '(firstName, lastName, slackUserId, id) ' +
+           'VALUES ' +
+           `(${slackUsername}, "REGISTER", ${slackUserId}, ${id});`;
+};
+
 module.exports.createFinishedClock = function(employeeId, customerId, start, end, id) {
     return 'INSERT INTO FinishedClocks ' +
            '(employeeId, customerId, start, end, id) ' +
@@ -48,7 +55,7 @@ module.exports.deleteFinishedClock = function(id) {
     return `DELETE FROM FinishedClocks WHERE id = ${id};`;
 };
 
-module.exports.getCustomers = 'SELECT * FROM Customers;';
+module.exports.getCustomers = 'SELECT * FROM Customers ORDER BY name;';
 
 module.exports.createResponse = function(employeeId, received, start, id) {
     return 'INSERT INTO SlackResponses ' +
@@ -79,7 +86,7 @@ module.exports.checks =
         firstName VARCHAR(255) NOT NULL,\
         lastName VARCHAR(255) NOT NULL,\
         email VARCHAR(255),\
-        phone INT,\
+        phone VARCHAR(13),\
         slackUserId CHAR(9) NOT NULL,\
         id CHAR(32) NOT NULL\
     );',
