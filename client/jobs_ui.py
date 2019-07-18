@@ -31,9 +31,7 @@ def refresh_jobs(main_window):
     finished_tw.setHorizontalHeaderLabels(finished_jobs_header_items)
 
     def inner():
-        print('yeet')
         active_jobs = main_window.db.get_active_clocks()
-        print(active_jobs)
         active_tw.setRowCount(len(active_jobs))
         for row in range(0, len(active_jobs)):
             job = active_jobs[row]
@@ -58,7 +56,6 @@ def refresh_jobs(main_window):
         active_tw.sortItems(0)
 
         finished_jobs = main_window.db.get_finished_clocks()
-        print(finished_jobs)
         finished_tw.setRowCount(len(finished_jobs))
         for row in range(0, len(finished_jobs)):
             job = finished_jobs[row]
@@ -93,12 +90,15 @@ def delete_active_job(main_window):
     tw = main_window.window.activejobs_tablewidget
 
     def inner():
-        row = tw.currentRow()
-        if row < 0:
+        selected = tw.selectedRanges()
+        if len(selected) == 0:
             main_window.show_error('No job selected.')
             return
-        job_id = tw.item(row, 4).text()
-        main_window.db.delete_active_clock(job_id)
+        top_row = selected[0].topRow()
+        bottom_row = selected[0].bottomRow()
+        for row in range(top_row, bottom_row + 1):
+            job_id = tw.item(row, 4).text()
+            main_window.db.delete_active_clock(job_id)
         refresh_jobs(main_window)
 
     return inner
@@ -108,12 +108,15 @@ def delete_finished_job(main_window):
     tw = main_window.window.finishedjobs_tablewidget
 
     def inner():
-        row = tw.currentRow()
-        if row < 0:
-            main_window.show_error('No job selected')
+        selected = tw.selectedRanges()
+        if len(selected) == 0:
+            main_window.show_error('No job selected.')
             return
-        job_id = tw.item(row, 5).text()
-        main_window.db.delete_finished_clock(job_id)
+        top_row = selected[0].topRow()
+        bottom_row = selected[0].bottomRow()
+        for row in range(top_row, bottom_row + 1):
+            job_id = tw.item(row, 5).text()
+            main_window.db.delete_finished_clock(job_id)
         refresh_jobs(main_window)
 
     return inner

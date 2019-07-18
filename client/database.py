@@ -7,7 +7,8 @@ class ScheduleKeeperDatabase(object):
 
     def __init__(self, host, username, password):
         self.db = mysql.connector.connect(user=username, password=password,
-                                          host=host, database='sk_db', autocommit=True)
+                                          host=host, database='sk_db',
+                                          autocommit=True)
 
     def close_connection(self):
         self.db.close()
@@ -66,7 +67,6 @@ class ScheduleKeeperDatabase(object):
         new_query = self.db.cursor()
         new_query.execute(queries.get_active_clocks)
         result = list(new_query)
-        print(result)
         return result
 
     def delete_finished_clock(self, clock_id):
