@@ -104,7 +104,7 @@ Be sure to uncomment this line if you're not using the default
 * SK_SLACK_SIGNING_SECRET: The signing secret from part 5
 * SK_SLACK_BOT_TOKEN: The bot token from part 5
 * Also edit the WorkingDirectory and ExecStart paths if not using skserver as
-the service user
+the service user, as well as the User variable.
 
 When done editing, start the service and verify that it started successfully:
 
