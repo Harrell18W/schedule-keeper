@@ -18,7 +18,7 @@ def customers_tablewidget_setup(main_window):
     tw.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
 
-def parse_nicknames(nicknames):
+def parse_nicknames_str(nicknames):
     items = list(map(lambda x: x.strip()[1:-1], nicknames[1:-1].split(',')))
     result = ''
     for i in range(0, len(items)):
@@ -26,6 +26,10 @@ def parse_nicknames(nicknames):
         if i < len(items) - 1:
             result += ', '
     return result
+
+
+def parse_nicknames_list(nicknames):
+    return parse_nicknames_str(nicknames).split(', ')
 
 
 def populate_customers_details(main_window):
@@ -126,8 +130,8 @@ def add_customer(main_window):
                 msg = 'Customer %s already exists.' % customer[0]
                 main_window.show_error(msg)
                 return
-            if name.upper() in customer[1].upper():
-                msg = 'A customer exists with nickname %s.' % name
+            if name.upper() in parse_nicknames_list(customer[1].upper()):
+                msg = 'A customer exists with nickname %s.' % name.upper()
                 main_window.show_error(msg)
                 return
             for nickname in nicknames:
@@ -135,8 +139,8 @@ def add_customer(main_window):
                     msg = 'A customer exists with name %s.' % customer[0]
                     main_window.show_error(msg)
                     return
-                if nickname in customer[1]:
-                    msg = 'A customer exists with nickname %s.' % name
+                if nickname in parse_nicknames_list(customer[1].upper()):
+                    msg = 'A customer exists with nickname %s.' % nickname
                     main_window.show_error(msg)
                     return
 
@@ -177,7 +181,7 @@ def refresh_customers(main_window):
             for column in range(0, len(customers_header_items)):
                 text = customers[row][column]
                 if column == customers_header_items.index('Nicknames'):
-                    text = parse_nicknames(text)
+                    text = parse_nicknames_str(text)
                 text = str(text) if text else None
                 item = QTableWidgetItem(text)
                 tw.setItem(row, column, item)

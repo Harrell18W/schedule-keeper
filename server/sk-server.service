@@ -14,6 +14,7 @@ Environment=SK_SLACK_SIGNING_SECRET=
 Environment=SK_SLACK_BOT_TOKEN=
 
 Type=simple
+
 User=skserver
 
 # Change these paths if using a different service user name

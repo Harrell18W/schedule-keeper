@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
+    <width>1050</width>
     <height>720</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>1000</width>
+    <width>1050</width>
     <height>720</height>
    </size>
   </property>
@@ -210,7 +210,7 @@
                <widget class="QPushButton" name="nickname_add_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>174</width>
+                  <width>199</width>
                   <height>33</height>
                  </size>
                 </property>
@@ -223,7 +223,7 @@
                <widget class="QPushButton" name="nickname_delete_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>174</width>
+                  <width>199</width>
                   <height>33</height>
                  </size>
                 </property>
@@ -240,7 +240,7 @@
                <widget class="QPushButton" name="customers_add_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>114</width>
+                  <width>131</width>
                   <height>33</height>
                  </size>
                 </property>
@@ -253,7 +253,7 @@
                <widget class="QPushButton" name="customers_delete_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>114</width>
+                  <width>130</width>
                   <height>33</height>
                  </size>
                 </property>
@@ -266,7 +266,7 @@
                <widget class="QPushButton" name="customers_refresh_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>114</width>
+                  <width>131</width>
                   <height>33</height>
                  </size>
                 </property>
@@ -458,7 +458,7 @@
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>84</width>
+                  <width>97</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -477,7 +477,7 @@
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>84</width>
+                  <width>96</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -496,7 +496,7 @@
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>84</width>
+                  <width>97</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -515,7 +515,7 @@
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>84</width>
+                  <width>96</width>
                   <height>16777215</height>
                  </size>
                 </property>
