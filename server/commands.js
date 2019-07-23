@@ -109,7 +109,8 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
         return;
     }
 
-    var customerName = (await db.getCustomerFromId(activeClock.customerId)).name;
+    var customerName = await apputils.getCustomerNameFromId(say, command.user_id, activeClock.customerId);
+    if (!customerName) return;
 
     db.createFinishedClock(employeeId, activeClock.customerId, time.sqlDatetime(activeClock.start), time.sqlDatetime(finished), activeClock.id);
     db.deleteActiveClock(activeClock.id);

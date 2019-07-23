@@ -49,7 +49,20 @@ module.exports.getEmployeeIdFromSlackUserId = async function (say, slackUserId) 
         return await db.getEmployeeIdFromSlackUserId(slackUserId);
     } catch (err) {
         if (err instanceof errors.EntryNotFoundError) {
-            say(`<@${slackUserId}> You do not appear to be in the employee database`);
+            say(`<@${slackUserId}> You do not appear to be in the employee database.`);
+            return null;
+        } else {
+            throw err;
+        }
+    }
+};
+
+module.exports.getCustomerNameFromId = async function(say, slackUserId, id) {
+    try {
+        return (await db.getCustomerFromId(id)).name;
+    } catch (err) {
+        if (err instanceof errors.EntryNotFoundError) {
+            say(`<@${slackUserId}> That customer was not found.`);
             return null;
         } else {
             throw err;

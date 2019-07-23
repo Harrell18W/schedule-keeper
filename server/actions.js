@@ -53,7 +53,8 @@ module.exports.clockoutButton = async function({ ack, say, body }) {
     var activeClock = await apputils.getActiveClockFromEmployeeId(say, body.user.id, employeeId);
     if (!activeClock) return;
 
-    var customerName = (await db.getCustomerFromId(activeClock.customerId)).name;
+    var customerName = await apputils.getCustomerNameFromId(say, body.user.id, activeClock.customerId);
+    if (!customerName) return;
 
     var finished = new Date();
 
@@ -74,7 +75,8 @@ module.exports.clockoutCancel = async function({ ack, say, action, body }) {
     var activeClock = await apputils.getActiveClockFromEmployeeId(say, body.user.id, employeeId);
     if (!activeClock) return;
 
-    var customerName = (await db.getCustomerFromId(activeClock.customerId)).name;
+    var customerName = await apputils.getCustomerNameFromId(say, body.user.id, activeClock.customerId);
+    if (!customerName) return;
 
     db.deleteActiveClock(activeClock.id);
 
@@ -92,7 +94,8 @@ module.exports.sessionCancel = async function({ ack, say, action, body }) {
     var finishedClock = await apputils.getFinishedClock(say, body.user.id, finishedClockId);
     if (!finishedClock) return;
 
-    var customerName = (await db.getCustomerFromId(finishedClock.customerId)).name;
+    var customerName = await apputils.getCustomerNameFromId(say, body.user.id, finishedClock.customerId);
+    if (!customerName) return;
 
     db.deleteFinishedClock(finishedClockId);
 
