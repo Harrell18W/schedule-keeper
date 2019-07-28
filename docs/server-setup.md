@@ -10,6 +10,10 @@ These instructions were tested on Ubuntu Server 18.04.
 
 ## 1. Prepare Ubuntu Server
 
+If the timezone has not been set, set it with:
+
+`sudo dpkg-reconfigure tzdata`
+
 The Node.js package in the default Ubuntu repositories is outdated.
 A newer version is available in the
 [NodeSource](https://github.com/nodesource/distributions/)
@@ -82,9 +86,6 @@ Leave this page open - you will need to come back to it later.
 
 ## 5. Setup SK server
 
-Clone from the GitHub repository into your (not skserver's) home directory:
-
-`git clone https://github.com/Harrell18W/schedule-keeper.git`
 
 Create a symlink between you and skserver:
 
@@ -154,3 +155,9 @@ for each one and filling in the information:
 To test the bot, open the Slack App. The bot user you created should be in your workspace
 under Apps. Click it, and send it the /register command. If it responds, the bot is
 working. No further configuration can be performed without the client.
+
+## Troubleshooting
+
+If the MySQL server is restarted, the server needs to be restarted as well:
+
+`sudo systemctl restart sk-server`
