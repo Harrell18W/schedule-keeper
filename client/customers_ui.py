@@ -19,6 +19,7 @@ def customers_tablewidget_setup(main_window):
 
 
 def parse_nicknames_str(nicknames):
+    nicknames = str(nicknames)[2:-1]
     items = list(map(lambda x: x.strip()[1:-1], nicknames[1:-1].split(',')))
     result = ''
     for i in range(0, len(items)):
