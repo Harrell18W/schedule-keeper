@@ -85,6 +85,7 @@ def add_nickname(main_window):
             return
         if nickname == name:
             main_window.show_error('Cannot use customer name as nickname.')
+            return
         if nickname in get_nicknames(main_window):
             main_window.show_error('Nickname %s already exists.' % nickname)
             return

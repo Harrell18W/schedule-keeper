@@ -1,9 +1,10 @@
 import configparser
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import QFile, SIGNAL, QObject
+from PySide2.QtWidgets import QFileDialog
 
 import re
-from os.path import exists as file_exists
+import os
 
 config_path = './sk-client.ini'
 
@@ -24,6 +25,11 @@ widgets = [
         'name': 'login_pushbutton',
         'signal': 'clicked()',
         'fn': 'login'
+    },
+    {
+        'name': 'browse_pushbutton',
+        'signal': 'clicked()',
+        'fn': 'open_file_dialog'
     }
 ]
 
@@ -69,7 +75,7 @@ class LoginWindow(object):
         self.dialog.remember_password_checkbox.setEnabled(state)
 
     def load_config(self):
-        if not file_exists(config_path):
+        if not os.path.exists(config_path):
             return
         config = configparser.ConfigParser()
         config.read(config_path)
@@ -95,6 +101,14 @@ class LoginWindow(object):
                 config['credentials']['password'] = password
         with open(config_path, 'w') as config_file:
             config.write(config_file)
+
+    def open_file_dialog(self):
+        dialog = QFileDialog(self.dialog)
+        dialog.setFileMode(QFileDialog.ExistingFile)
+        dialog.setDirectory(os.environ['HOME'])
+        if dialog.exec_():
+            filename = dialog.selectedFiles()[0]
+            self.dialog.file_path_lineedit.setText(filename)
 
     def login(self):
         host = self.dialog.address_lineedit.text()
