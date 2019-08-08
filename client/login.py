@@ -1,10 +1,11 @@
-import configparser
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import QFile, SIGNAL, QObject
 from PySide2.QtWidgets import QFileDialog
 
 import re
 import os
+
+import config
 
 config_path = './sk-client.ini'
 
@@ -49,7 +50,7 @@ class LoginWindow(object):
 
         self.connect_slots()
 
-        self.load_config()
+        self.read_config()
 
     def show(self):
         self.dialog.show()
@@ -74,33 +75,32 @@ class LoginWindow(object):
             self.dialog.remember_password_checkbox.setChecked(False)
         self.dialog.remember_password_checkbox.setEnabled(state)
 
-    def load_config(self):
-        if not os.path.exists(config_path):
-            return
-        config = configparser.ConfigParser()
-        config.read(config_path)
-        if 'address' in config['credentials']:
-            host = config['credentials']['address']
+    def read_config(self):
+        saved_config = config.load_config()
+        filename = saved_config['UserInfo']['filename']
+        self.dialog.file_path_lineedit.setText(filename)
+        if 'host' in saved_config['UserInfo']:
+            host = saved_config['UserInfo']['host']
             self.dialog.address_lineedit.setText(host)
             self.dialog.remember_address_checkbox.setChecked(True)
-        if 'username' in config['credentials']:
-            username = config['credentials']['username']
+        if 'username' in saved_config['UserInfo']:
+            username = saved_config['UserInfo']['username']
             self.dialog.username_lineedit.setText(username)
             self.dialog.remember_username_checkbox.setChecked(True)
-        if 'password' in config['credentials']:
-            password = config['credentials']['password']
+        if 'password' in saved_config['UserInfo']:
+            password = saved_config['UserInfo']['password']
             self.dialog.password_lineedit.setText(password)
             self.dialog.remember_password_checkbox.setChecked(True)
 
-    def write_config(self, host, username=None, password=None):
-        config = configparser.ConfigParser()
-        config['credentials'] = {'address': host}
+    def update_config(self, filename, host, username=None, password=None):
+        new_config = {}
+        new_config['filename'] = filename
+        new_config['host'] = host
         if username:
-            config['credentials']['username'] = username
+            new_config['username'] = username
             if password:
-                config['credentials']['password'] = password
-        with open(config_path, 'w') as config_file:
-            config.write(config_file)
+                new_config['password'] = password
+        config.write_config(new_config)
 
     def open_file_dialog(self):
         dialog = QFileDialog(self.dialog)
@@ -111,6 +111,7 @@ class LoginWindow(object):
             self.dialog.file_path_lineedit.setText(filename)
 
     def login(self):
+        filename = self.dialog.file_path_lineedit.text()
         host = self.dialog.address_lineedit.text()
         if not bool(host_re.match(host)):
             self.main_window.show_error('Invalid host %s.' % host)
@@ -125,10 +126,10 @@ class LoginWindow(object):
             return
 
         if self.dialog.remember_password_checkbox.isChecked():
-            self.write_config(host, username, password)
+            self.update_config(filename, host, username, password)
         elif self.dialog.remember_username_checkbox.isChecked():
-            self.write_config(host, username)
+            self.update_config(filename, host, username)
         elif self.dialog.remember_address_checkbox.isChecked():
-            self.write_config(host)
+            self.update_config(filename, host)
 
         self.main_window.db_login(host, username, password)
