@@ -1,5 +1,8 @@
 import datetime as dt
 import openpyxl as pyxl
+import os
+from shutil import copy2
+import time
 
 
 class Spreadsheet(object):
@@ -12,6 +15,35 @@ class Spreadsheet(object):
 
     def save(self):
         self.workbook.save(self.filename)
+
+    def _already_backedup(self, backup_dir):
+        mtime = os.path.getmtime(self.filename)
+        for file in os.listdir(backup_dir):
+            if mtime == os.path.getmtime(backup_dir + file):
+                return True
+        return False
+
+    def _clean_backups(self, backup_dir):
+        print('yeet')
+        now = time.time()
+        for file in os.listdir(backup_dir):
+            age = now - os.path.getmtime(backup_dir + file)
+            if age > 7 * 86400:
+                print('yote')
+                os.remove(backup_dir + file)
+
+    def backup(self, backup_dir, force=False, clean=True):
+        if force or not self._already_backedup(backup_dir):
+            filename_base = self.filename.split('/')[-1]
+            filename_base, ext = filename_base.split('.')
+            timestamp = dt.datetime.now().strftime('%m-%d-%y %H-%M-%S')
+            dest_path = '%s%s Backup %s.%s' % (backup_dir, filename_base,
+                                               timestamp, ext)
+            print(dest_path)
+            copy2(self.filename, dest_path)
+
+        if clean:
+            self._clean_backups(backup_dir)
 
     def _get_customer_column(self, customer):
         for column in range(1, self.active_sheet.max_column + 1):

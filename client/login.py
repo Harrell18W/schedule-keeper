@@ -77,8 +77,9 @@ class LoginWindow(object):
 
     def read_config(self):
         saved_config = config.load_config()
-        filename = saved_config['UserInfo']['filename']
-        self.dialog.file_path_lineedit.setText(filename)
+        if 'filename' in saved_config['UserInfo']:
+            filename = saved_config['UserInfo']['filename']
+            self.dialog.file_path_lineedit.setText(filename)
         if 'host' in saved_config['UserInfo']:
             host = saved_config['UserInfo']['host']
             self.dialog.address_lineedit.setText(host)
@@ -132,5 +133,6 @@ class LoginWindow(object):
         elif self.dialog.remember_address_checkbox.isChecked():
             self.update_config(filename, host)
 
+        self.main_window.set_config(config.load_config())
         self.main_window.set_excel_file(filename)
         self.main_window.db_login(host, username, password)

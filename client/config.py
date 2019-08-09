@@ -8,7 +8,6 @@ log_path = folder_path + 'logs/'
 
 
 def init_config():
-    print(folder_path)
     if not os.path.exists(folder_path):
         os.mkdir(folder_path)
     if not os.path.exists(backup_path):
@@ -31,6 +30,13 @@ def load_config():
 
 def write_config(config):
     new_config = configparser.ConfigParser()
+
+    new_config['Directories'] = {}
+    new_config['Directories']['main'] = folder_path
+    new_config['Directories']['backup'] = backup_path
+    new_config['Directories']['config'] = config_path
+    new_config['Directories']['log'] = log_path
+
     new_config['UserInfo'] = {}
     for key in config.keys():
         new_config.set('UserInfo', key, config[key])
