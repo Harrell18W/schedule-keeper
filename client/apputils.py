@@ -1,4 +1,7 @@
 from random import choices
+import re
+
+elapsed_re = re.compile(r'((\d+) hours, )?(\d+) minutes')
 
 
 def str_id():
@@ -13,3 +16,10 @@ def time_elapsed(dt1, dt2):
         return '%d hours, %d minutes' % (hours, minutes)
     else:
         return '%d minutes' % minutes
+
+
+def time_elapsed_to_hours(elapsed_str):
+    match = elapsed_re.match(elapsed_str)
+    hours = int(match.group(2) if match.group(2) else 0)
+    hours += int(match.group(3)) / 60
+    return hours

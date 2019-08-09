@@ -1,7 +1,10 @@
 from PySide2.QtWidgets import QTableWidgetItem, QHeaderView
 from PySide2.QtWidgets import QAbstractItemView
 
+import datetime as dt
+
 import apputils
+from excel import Spreadsheet
 
 active_jobs_header_items = ['Customer', 'Employee', 'Started', 'Time Elapsed']
 active_jobs_header_items += ['ID']
@@ -100,6 +103,41 @@ def delete_active_job(main_window):
             job_id = tw.item(row, 4).text()
             main_window.db.delete_active_clock(job_id)
         refresh_jobs(main_window)
+
+    return inner
+
+
+def enter_finished_jobs(main_window):
+    tw = main_window.window.finishedjobs_tablewidget
+
+    def inner():
+        selected = tw.selectedRanges()
+        if len(selected) == 0:
+            main_window.show_error('No job selected.')
+            return
+        top_row = selected[0].topRow()
+        bottom_row = selected[-1].bottomRow()
+        workbook = Spreadsheet(main_window.excel_filename)
+        inserted = []
+        for row in range(top_row, bottom_row + 1):
+            current_year = str(dt.datetime.today().year)
+            finished_str = tw.item(row, 3).text() + ' ' + current_year
+            finished = dt.datetime.strptime(finished_str, '%b %d, %I:%M%p %Y')
+            customer = tw.item(row, 0).text()
+            elapsed_str = tw.item(row, 4).text()
+            elapsed = apputils.time_elapsed_to_hours(elapsed_str)
+            ok, msg = workbook.insert_job(finished, customer, elapsed)
+            if not ok:
+                msg += '\nNo changes were made to the Excel workbook.'
+                main_window.show_error(msg)
+                return
+            inserted.append(msg)
+        workbook.save()
+        # not an error but shh
+        msg = 'Inserted the following data into the spreadsheet:\n\n'
+        for item in inserted:
+            msg += item + '\n'
+        main_window.show_error(msg)
 
     return inner
 

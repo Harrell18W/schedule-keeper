@@ -39,8 +39,10 @@ class MainWindow(object):
     def hide_error(self):
         self.error.hide()
 
+    def set_excel_file(self, filename):
+        self.excel_filename = filename
+
     def db_login(self, host, user, password):
-        # self.db = database.ScheduleKeeperDatabase(host, user, password)
         try:
             self.db = database.ScheduleKeeperDatabase(host, user, password)
         except DatabaseError as err:

@@ -36,7 +36,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="status_tab">
        <attribute name="title">
@@ -92,11 +92,22 @@
          <widget class="QTableWidget" name="finishedjobs_tablewidget"/>
         </item>
         <item>
-         <widget class="QPushButton" name="delete_selected_finishedjobs_pushbutton">
-          <property name="text">
-           <string>Delete Selected</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="finishedjobs_buttons">
+          <item>
+           <widget class="QPushButton" name="enter_selected_finishedjobs_pushbutton">
+            <property name="text">
+             <string>Enter Selected into Spreadsheet</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="delete_selected_finishedjobs_pushbutton">
+            <property name="text">
+             <string>Delete Selected</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>

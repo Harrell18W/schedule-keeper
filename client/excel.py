@@ -31,6 +31,19 @@ class Spreadsheet(object):
 
     def insert_job(self, date, customer, hours):
         column = self._get_customer_column(customer)
+        if not column:
+            return False, 'Customer %s not found in spreadsheet.' % customer
         row = self._get_date_row(date)
+        if not row:
+            return False, 'Date %s not found in spreadsheet.' \
+                % date.strftime('%b %d %Y')
         cell = self.active_sheet.cell(row=row, column=column)
-        cell.value = cell.value + hours if cell.value else hours
+        column_letter = pyxl.utils.get_column_letter(column)
+        value = round(hours, 2)
+        try:
+            cell.value = cell.value + value if cell.value else value
+        except TypeError:
+            return False, 'Invalid data exists in cell ' \
+                '%s%d.' % (column_letter, row)
+        return True, '%s, %s, %.2f hours (%s%d)' \
+            % (customer, date.strftime('%b %d %Y'), value, column_letter, row)

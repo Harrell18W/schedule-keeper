@@ -71,6 +71,11 @@ widgets = [
         'fn': jobs_ui.delete_active_job
     },
     {
+        'name': 'enter_selected_finishedjobs_pushbutton',
+        'signal': 'clicked()',
+        'fn': jobs_ui.enter_finished_jobs
+    },
+    {
         'name': 'delete_selected_finishedjobs_pushbutton',
         'signal': 'clicked()',
         'fn': jobs_ui.delete_finished_job

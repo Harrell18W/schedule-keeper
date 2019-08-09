@@ -132,4 +132,5 @@ class LoginWindow(object):
         elif self.dialog.remember_address_checkbox.isChecked():
             self.update_config(filename, host)
 
+        self.main_window.set_excel_file(filename)
         self.main_window.db_login(host, username, password)
