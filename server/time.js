@@ -32,7 +32,14 @@ module.exports.timeParameter = function(timeArg) {
     var digits;
     var hour;
     var minute;
-    if (/^\d{3}([ap]m?)?$/i.test(timeArg)) {
+    //TODO refactor this
+    if (/^(\d{1,2})([ap]m?)?$/i.test(timeArg)) {
+        var match = /^(\d{1,2})([ap]m?)?$/i.exec(timeArg);
+        hour = Number(match[1]);
+        if (timeArg.includes('p')) hour += 12;
+        hour = hour == 24 && timeArg.includes('p') ? 12 : hour;
+        minute = 0;
+    } else if (/^\d{3}([ap]m?)?$/i.test(timeArg)) {
         digits = timeArg.substring(0, 3);
         hour = Number(digits.substring(0, 1));
         hour += timeArg.includes('p') ? 12 : 0;

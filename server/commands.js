@@ -49,7 +49,7 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
     var id = crypto.randomBytes(16).toString('hex');
     if (args.time) {
         var { hour, minute } = timeParser(say, args.time, command.user_id);
-        if (!hour) return;
+        if (!hour && hour !== 0) return;
         start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     }
     if (args.customer) {
