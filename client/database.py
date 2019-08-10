@@ -44,6 +44,10 @@ class ScheduleKeeperDatabase(object):
         new_query = self.db.cursor()
         new_query.execute(queries.add_customer, customer)
 
+    def update_customer(self, customer_update):
+        new_query = self.db.cursor()
+        new_query.execute(queries.update_customer, customer_update)
+
     def get_customer(self, customer_id):
         new_query = self.db.cursor()
         new_query.execute(queries.get_customer, (customer_id,))

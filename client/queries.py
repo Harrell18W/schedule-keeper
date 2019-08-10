@@ -30,6 +30,10 @@ add_customer: str = '''INSERT INTO Customers
 VALUES
 (%s, %s, %s)'''
 
+update_customer: str = '''UPDATE Customers SET
+customShorthands = %s
+WHERE name = %s'''
+
 get_customer: str = '''SELECT * FROM Customers
 WHERE id = %s'''
 

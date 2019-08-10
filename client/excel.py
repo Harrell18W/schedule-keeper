@@ -24,12 +24,10 @@ class Spreadsheet(object):
         return False
 
     def _clean_backups(self, backup_dir):
-        print('yeet')
         now = time.time()
         for file in os.listdir(backup_dir):
             age = now - os.path.getmtime(backup_dir + file)
             if age > 7 * 86400:
-                print('yote')
                 os.remove(backup_dir + file)
 
     def backup(self, backup_dir, force=False, clean=True):
@@ -39,7 +37,6 @@ class Spreadsheet(object):
             timestamp = dt.datetime.now().strftime('%m-%d-%y %H-%M-%S')
             dest_path = '%s%s Backup %s.%s' % (backup_dir, filename_base,
                                                timestamp, ext)
-            print(dest_path)
             copy2(self.filename, dest_path)
 
         if clean:

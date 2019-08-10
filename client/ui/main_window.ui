@@ -36,7 +36,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="status_tab">
        <attribute name="title">
@@ -251,7 +251,7 @@
                <widget class="QPushButton" name="customers_add_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>131</width>
+                  <width>97</width>
                   <height>33</height>
                  </size>
                 </property>
@@ -261,10 +261,23 @@
                </widget>
               </item>
               <item>
+               <widget class="QPushButton" name="customers_update_pushbutton">
+                <property name="maximumSize">
+                 <size>
+                  <width>96</width>
+                  <height>33</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Update</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="customers_delete_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>130</width>
+                  <width>97</width>
                   <height>33</height>
                  </size>
                 </property>
@@ -277,7 +290,7 @@
                <widget class="QPushButton" name="customers_refresh_pushbutton">
                 <property name="maximumSize">
                  <size>
-                  <width>131</width>
+                  <width>96</width>
                   <height>33</height>
                  </size>
                 </property>

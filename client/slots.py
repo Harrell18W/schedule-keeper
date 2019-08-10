@@ -26,6 +26,11 @@ widgets = [
         'fn': customers_ui.add_customer
     },
     {
+        'name': 'customers_update_pushbutton',
+        'signal': 'clicked()',
+        'fn': customers_ui.update_customer
+    },
+    {
         'name': 'customers_delete_pushbutton',
         'signal': 'clicked()',
         'fn': customers_ui.delete_customer

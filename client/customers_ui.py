@@ -64,6 +64,21 @@ def get_nicknames(main_window):
     return results
 
 
+def check_for_existing(main_window, name, nicknames):
+    existing_customers = main_window.db.get_customers()
+    for customer in existing_customers:
+        for nickname in nicknames:
+            if nickname == customer[0].upper():
+                msg = 'A customer exists with name %s.' % customer[0]
+                main_window.show_error(msg)
+                return False
+            if nickname in parse_nicknames_list(customer[1].upper()):
+                msg = 'A customer exists with nickname %s.' % nickname
+                main_window.show_error(msg)
+                return False
+    return True
+
+
 def add_nickname(main_window):
     nicknames_lw = main_window.window.customers_nicknames_listwidget
     name_te = main_window.window.customers_name_lineedit
@@ -136,20 +151,29 @@ def add_customer(main_window):
                 msg = 'A customer exists with nickname %s.' % name.upper()
                 main_window.show_error(msg)
                 return
-            for nickname in nicknames:
-                if nickname == customer[0].upper():
-                    msg = 'A customer exists with name %s.' % customer[0]
-                    main_window.show_error(msg)
-                    return
-                if nickname in parse_nicknames_list(customer[1].upper()):
-                    msg = 'A customer exists with nickname %s.' % nickname
-                    main_window.show_error(msg)
-                    return
+        if not check_for_existing(main_window, name, nicknames):
+            return
 
         nicknames = str(nicknames).replace('\'', '"')
         customer_id = apputils.str_id()
         customer = (name, nicknames, customer_id)
         main_window.db.add_customer(customer)
+        refresh_customers(main_window)
+
+    return inner
+
+
+def update_customer(main_window):
+    name_te = main_window.window.customers_name_lineedit
+
+    def inner():
+        name = name_te.text()
+        nicknames = get_nicknames(main_window)
+        if not check_for_existing(main_window, name, nicknames):
+            return
+        nicknames = str(nicknames).replace('\'', '"')
+        customer_update = (nicknames, name)
+        main_window.db.update_customer(customer_update)
         refresh_customers(main_window)
 
     return inner
@@ -175,6 +199,11 @@ def refresh_customers(main_window):
     customers_tablewidget_setup(main_window)
 
     def inner():
+        name = None
+        if tw.currentItem():
+            row = tw.currentRow()
+            name = tw.item(row, 0).text()
+
         customers = main_window.db.get_customers()
         tw.setColumnCount(len(customers_header_items))
         tw.setRowCount(len(customers))
@@ -188,6 +217,12 @@ def refresh_customers(main_window):
                 item = QTableWidgetItem(text)
                 tw.setItem(row, column, item)
         tw.sortItems(0)
+
+        if name:
+            for row in range(0, tw.rowCount()):
+                item = tw.item(row, 0)
+                if item.text() == name:
+                    tw.setCurrentItem(item)
 
     inner()
     return inner
