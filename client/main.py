@@ -1,4 +1,4 @@
-from mysql.connector.errors import DatabaseError
+from mysql.connector.errors import DatabaseError, InterfaceError
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication
 from PySide2.QtCore import QFile, SIGNAL
@@ -57,6 +57,10 @@ class MainWindow(object):
                 msg = 'Access denied to user with given credentials.'
                 self.show_error(msg)
                 return
+        except InterfaceError:
+            msg = 'Unable to connect to MySQL database at %s.' % host
+            self.show_error(msg)
+            return
         slots.connect_slots(self)
         self.login.hide()
         self.window.show()
