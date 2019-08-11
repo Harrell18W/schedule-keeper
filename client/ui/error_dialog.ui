@@ -6,18 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>455</width>
-    <height>170</height>
+    <width>400</width>
+    <height>180</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>180</height>
+   </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>455</width>
-    <height>170</height>
+    <height>1000</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>Error - Schedule Keeper</string>
+   <string>Info - Schedule Keeper</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item alignment="Qt::AlignLeft|Qt::AlignTop">
