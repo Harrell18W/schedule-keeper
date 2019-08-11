@@ -2,6 +2,7 @@ from PySide2.QtWidgets import QTableWidgetItem, QHeaderView
 from PySide2.QtWidgets import QAbstractItemView
 
 import datetime as dt
+from openpyxl.utils.exceptions import InvalidFileException
 
 import apputils
 from excel import Spreadsheet
@@ -119,7 +120,12 @@ def enter_finished_jobs(main_window):
         for selection in selected:
             top_row = selection.topRow()
             bottom_row = selection.bottomRow()
-            workbook = Spreadsheet(main_window.excel_filename)
+            try:
+                workbook = Spreadsheet(main_window.excel_filename)
+            except InvalidFileException:
+                msg = 'Unable to open ' + main_window.excel_filename
+                main_window.show_error(msg)
+                return
             workbook.backup(main_window.config['Directories']['backup'])
             for row in range(top_row, bottom_row + 1):
                 current_year = str(dt.datetime.today().year)

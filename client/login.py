@@ -107,6 +107,8 @@ class LoginWindow(object):
         dialog = QFileDialog(self.dialog)
         dialog.setFileMode(QFileDialog.ExistingFile)
         dialog.setDirectory(os.environ['HOME'])
+        name_filter = 'Excel 2007-2019 (*.xlsx);;All files (*)'
+        dialog.setNameFilter(name_filter)
         if dialog.exec_():
             filename = dialog.selectedFiles()[0]
             self.dialog.file_path_lineedit.setText(filename)
