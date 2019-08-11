@@ -16,6 +16,8 @@ app.command('/register', commands.register);
 
 app.action(/^customer_select_[0-9a-z]{32}$/, actions.clockinRequestResponse);
 app.action(/^clockin_request_cancel_[0-9a-z]{32}$/, actions.clockinRequestCancel);
+app.action(/^clockout_select_[0-9a-z]{32}$/, actions.clockoutRequestResponse);
+app.action(/^clockout_request_cancel_[0-9a-z]{32}$/, actions.clockoutRequestCancel);
 app.action(/^clockout_button_[0-9a-z]{32}$/, actions.clockoutButton);
 app.action(/^clockin_cancel_[0-9a-z]{32}$/, actions.clockoutCancel);
 app.action(/^session_cancel_[0-9a-z]{32}$/, actions.sessionCancel);

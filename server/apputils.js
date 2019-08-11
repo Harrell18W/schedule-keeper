@@ -7,11 +7,7 @@ module.exports.clockin = async function(say, slackUserId, customerName, start, i
     var employeeId = await this.getEmployeeIdFromSlackUserId(say, slackUserId);
     if (!employeeId) return;
 
-    if (await db.checkIfEmployeeHasActiveClocks(employeeId)) {
-        say(`<@${slackUserId}> You're already checked out with a customer`);
-        return;
-    }
-    if (await db.checkIfEmployeeHasSlackResponses(employeeId)) {
+    if (await db.checkIfEmployeeHasClockinResponses(employeeId)) {
         say(`<@${slackUserId}> You've already gotten a check out message. ` +
             'Please use that one before requesting another.');
         return;
@@ -29,14 +25,44 @@ module.exports.clockin = async function(say, slackUserId, customerName, start, i
     say({ blocks: blocks.clockinReponseBlocks(customerName, hrDate, id) });
 };
 
-module.exports.getResponse = async function(say, slackUserId, responseId) {
+module.exports.clockout = async function(say, slackUserId, end, id) {
+    var activeClock = await this.getActiveClock(say, slackUserId, id);
+    if (!activeClock) return;
+
+    var employeeId = await this.getEmployeeIdFromSlackUserId(say, slackUserId);
+    if (!employeeId) return;
+
+    var customerName = await this.getCustomerNameFromId(say, slackUserId, activeClock.customerId);
+    if (!customerName) return;
+
+    db.createFinishedClock(employeeId, activeClock.customerId, time.sqlDatetime(activeClock.start), time.sqlDatetime(end), id);
+    db.deleteActiveClock(id);
+
+    var timeDifference = time.dateDifference(activeClock.start, end);
+    say({ blocks: blocks.clockoutResponseBlocks(customerName, time.humanReadableDate(activeClock.start), time.humanReadableDate(end), timeDifference, id)});
+};
+
+module.exports.getClockinResponse = async function(say, slackUserId, responseId) {
     try {
-        return await db.getResponse(responseId);
+        return await db.getClockinResponse(responseId);
     } catch(err) {
         if(err instanceof errors.EntryNotFoundError) {
             say(`<@${slackUserId}> ` +
                 'The message that you tried to respond to was not found. ' +
                 'Did you already respond to it?');
+            return null;
+        } else {
+            throw err;
+        }
+    }
+};
+
+module.exports.getClockoutResponse = async function(say, slackUserId, responseId) {
+    try {
+        return await db.getClockoutResponse(responseId);
+    } catch (err) {
+        if (err instanceof errors.EntryNotFoundError) {
+            say(`<@${slackUserId}> That response was not found. Did you already respond to it?`);
             return null;
         } else {
             throw err;
@@ -70,9 +96,22 @@ module.exports.getCustomerNameFromId = async function(say, slackUserId, id) {
     }
 };
 
-module.exports.getActiveClockFromEmployeeId = async function(say, slackUserId, employeeId) {
+module.exports.getActiveClock = async function(say, slackUserId, id) {
     try {
-        return await db.getActiveClockFromEmployeeId(employeeId);
+        return await db.getActiveClock(id);
+    } catch(err) {
+        if (err instanceof errors.EntryNotFoundError) {
+            say(`<@${slackUserId}> That session was not found.`);
+            return null;
+        } else {
+            throw err;
+        }
+    }
+};
+
+module.exports.getActiveClocksFromEmployeeId = async function(say, slackUserId, employeeId) {
+    try {
+        return await db.getActiveClocksFromEmployeeId(employeeId);
     } catch (err) {
         if (err instanceof errors.EntryNotFoundError) {
             say(`<@${slackUserId}> There is no active session tied to your name. ` +

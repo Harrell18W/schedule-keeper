@@ -71,7 +71,7 @@ module.exports.clockinReponseBlocks = function(customer, time, id) {
                         'type': 'plain_text',
                         'text': ':heavy_check_mark: Clock Out'
                     },
-                    'value': 'clockout'
+                    'value': id
                 },
                 {
                     'action_id': `clockin_cancel_${id}`,
@@ -81,14 +81,65 @@ module.exports.clockinReponseBlocks = function(customer, time, id) {
                         'text': ':x: Cancel'
                     },
                     'style': 'danger',
-                    'value': 'cancel_clockin'
+                    'value': id
                 }
             ]
         }
     ];
 };
 
-module.exports.clockoutBlocks = function(customer, start, end, time, id) {
+module.exports.clockoutBlocks = function(slackUserId, id, customers) {
+    var customers_items = [];
+    for (const customer of customers) {
+        customers_items.push(
+            {
+                'text': {
+                    'type': 'plain_text',
+                    'text': customer.text
+                },
+                'value': customer.id
+            }
+        );
+    }
+
+    return [
+        {
+            'type': 'section',
+            'block_id': 'clock_out_mainresponse',
+            'text': {
+                'type': 'mrkdwn',
+                'text': `<@${slackUserId}> Please choose a customer from the list:`
+            }
+        },
+        {
+            'type': 'actions',
+            'block_id': 'clockout_elements',
+            'elements': [
+                {
+                    'action_id': `clockout_select_${id}`,
+                    'type': 'static_select',
+                    'placeholder': {
+                        'type': 'plain_text',
+                        'text': 'Choose a customer'
+                    },
+                    'options': customers_items
+                },
+                {
+                    'type': 'button',
+                    'text': {
+                        'type': 'plain_text',
+                        'text': ':x: Cancel'
+                    },
+                    'style': 'danger',
+                    'value': 'cancel',
+                    'action_id': `clockout_request_cancel_${id}`
+                }
+            ]
+        }
+    ];
+};
+
+module.exports.clockoutResponseBlocks = function(customer, start, end, time, id) {
     return [
         {
             'type': 'section',

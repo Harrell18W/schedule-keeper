@@ -7,12 +7,11 @@ module.exports.clockinRequestResponse = async function({ ack, say, action, body 
     ack();
 
     var responseId = action.action_id.substring(16);
-    var response = await apputils.getResponse(say, body.user.id, responseId);
+    var response = await apputils.getClockinResponse(say, body.user.id, responseId);
     if (!response) return;
 
     var customerName = action.selected_option.text.text;
 
-    //TESTLATER
     var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, body.user.id);
     if (!employeeId) return;
     if (employeeId !== response.employeeId) {
@@ -21,7 +20,7 @@ module.exports.clockinRequestResponse = async function({ ack, say, action, body 
     }
 
     apputils.clockin(say, body.user.id, customerName, response.start, responseId);
-    await db.deleteResponse(responseId);
+    await db.deleteClockinResponse(responseId);
 };
 
 module.exports.clockinRequestCancel = async function({ ack, say, action, body }) {
@@ -31,7 +30,7 @@ module.exports.clockinRequestCancel = async function({ ack, say, action, body })
     if (!employeeId) return;
 
     var responseId = action.action_id.substring(23);
-    var response = await apputils.getResponse(say, body.user.id, responseId);
+    var response = await apputils.getClockinResponse(say, body.user.id, responseId);
     if (!response) return;
 
     if (employeeId !== response.employeeId) {
@@ -39,31 +38,72 @@ module.exports.clockinRequestCancel = async function({ ack, say, action, body })
         return;
     }
 
-    db.deleteResponse(response.id);
+    db.deleteClockinResponse(response.id);
 
     say(`<@${body.user.id}> Your clock in request was cancelled`);
 };
 
-module.exports.clockoutButton = async function({ ack, say, body }) {
+module.exports.clockoutRequestResponse = async function({ ack, say, action, body }) {
+    ack();
+
+    var responseId = action.action_id.substring(16);
+    var response = await apputils.getClockoutResponse(say, body.user.id, responseId);
+    if (!response) return;
+
+    var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, body.user.id);
+    if (!employeeId) return;
+    if (response.employeeId !== employeeId) {
+        say(`<@${body.user.id}> You are not who this response was intended for.`);
+        return;
+    }
+
+    var activeClockId = action.selected_option.value;
+    var activeClock = await apputils.getActiveClock(say, body.user.id, activeClockId);
+    if (!activeClock) return;
+
+    if (response.finished < activeClock.start) {
+        say(`<@${body.user.id}> The time you finished at is before the time you started.`);
+        return;
+    }
+
+    var customer = await apputils.getCustomerNameFromId(say, body.user.id, activeClock.customerId);
+    if (!customer) return;
+
+    db.createFinishedClock(activeClock.employeeId, activeClock.customerId, activeClock.start, response.finished, activeClockId);
+    db.deleteActiveClock(activeClockId);
+    db.deleteClockoutResponse(responseId);
+
+    var start = time.humanReadableDate(activeClock.start);
+    var finished = time.humanReadableDate(response.finished);
+    var elapsed = time.dateDifference(activeClock.start, response.finished);
+    say({ blocks: blocks.clockoutResponseBlocks(customer, start, finished, elapsed, activeClockId) });
+};
+
+module.exports.clockoutRequestCancel = async function({ ack, say, action, body }) {
     ack();
 
     var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, body.user.id);
     if (!employeeId) return;
 
-    var activeClock = await apputils.getActiveClockFromEmployeeId(say, body.user.id, employeeId);
-    if (!activeClock) return;
+    var responseId = action.action_id.substring(24);
+    var response = await apputils.getClockoutResponse(say, body.user.id, responseId);
+    if (!response) return;
 
-    var customerName = await apputils.getCustomerNameFromId(say, body.user.id, activeClock.customerId);
-    if (!customerName) return;
+    if (employeeId !== response.employeeId) {
+        say(`<@${body.user.id}> You are not who this response was intended for.`);
+        return;
+    }
 
-    var finished = new Date();
+    db.deleteClockoutResponse(responseId);
 
-    db.createFinishedClock(employeeId, activeClock.customerId, time.sqlDatetime(activeClock.start), time.sqlDatetime(finished), activeClock.id);
-    db.deleteActiveClock(activeClock.id);
+    say(`<@${body.user.id}> Your clock out request was cancelled.`);
+};
 
-    var timeDifference = time.dateDifference(activeClock.start, finished);
+module.exports.clockoutButton = async function({ ack, say, action, body }) {
+    ack();
 
-    say({ blocks: blocks.clockoutBlocks(customerName, time.humanReadableDate(activeClock.start), time.humanReadableDate(finished), timeDifference, activeClock.id) });
+    var end = new Date();
+    apputils.clockout(say, body.user.id, end, action.value);
 };
 
 module.exports.clockoutCancel = async function({ ack, say, action, body }) {
@@ -72,7 +112,8 @@ module.exports.clockoutCancel = async function({ ack, say, action, body }) {
     var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, body.user.id, action.a);
     if (!employeeId) return;
 
-    var activeClock = await apputils.getActiveClockFromEmployeeId(say, body.user.id, employeeId);
+    var activeClockId = action.value;
+    var activeClock = await apputils.getActiveClock(say, body.user.id, activeClockId);
     if (!activeClock) return;
 
     var customerName = await apputils.getCustomerNameFromId(say, body.user.id, activeClock.customerId);
@@ -80,7 +121,7 @@ module.exports.clockoutCancel = async function({ ack, say, action, body }) {
 
     db.deleteActiveClock(activeClock.id);
 
-    say(`<@${body.user.id}> Your session with ${customerName} was cancelled`);
+    say(`<@${body.user.id}> Your session with ${customerName} was cancelled.`);
 };
 
 module.exports.sessionCancel = async function({ ack, say, action, body }) {

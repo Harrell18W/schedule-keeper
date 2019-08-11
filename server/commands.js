@@ -6,6 +6,7 @@ const db = require('./database');
 const errors = require('./errors');
 const time = require('./time');
 
+//TODO redo this
 function argParser(args) {
     var stripped = args.split(' ');
     var parsed = [];
@@ -13,8 +14,15 @@ function argParser(args) {
         if (i !== '') parsed.push(i);
     if (parsed.length === 0)
         return { time: null, customer: null };
-    if (parsed.length > 2)
-        throw new errors.CommandArgsError(`Invalid args ${args}`);
+    if (parsed.length > 2) {
+        var customer = '';
+        for (var x = 1; x < parsed.length; x++) {
+            customer += parsed[x];
+            if (x < parsed.length - 1)
+                customer += ' ';
+        }
+        parsed[1] = customer;
+    }
     if (/\d+[amp]{0,2}$/.test(args[0])) {
         return {
             time: parsed[0],
@@ -60,12 +68,7 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
     var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, command.user_id);
     if (!employeeId) return;
 
-    if (await db.checkIfEmployeeHasActiveClocks(employeeId)) {
-        say(`<@${command.user_id}> You're already clocked in with a customer`);
-        return;
-    }
-
-    if (await db.checkIfEmployeeHasSlackResponses(employeeId)) {
+    if (await db.checkIfEmployeeHasClockinResponses(employeeId)) {
         say(`<@${command.user_id}> You've already gotten a check out message. ` +
             'Please use that one before requesting another.');
         return;
@@ -81,7 +84,7 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
 
     var responseBlocks = blocks.clockinBlocks(command.user_id, id, customers);
 
-    db.createResponse(employeeId, time.sqlDatetime(now), time.sqlDatetime(start), id);
+    db.createClockinResponse(employeeId, time.sqlDatetime(now), time.sqlDatetime(start), id);
 
     say({ blocks: responseBlocks });
 };
@@ -94,32 +97,67 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
     var finished = now;
     if (args.time) {
         var { hour, minute } = timeParser(say, args.time, command.user_id);
-        if (!hour) return;
+        if (!hour && hour !== 0) return;
         finished = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     }
+    var employeeId;
+    var customer;
+    if (args.customer) {
+        employeeId = await apputils.getEmployeeIdFromSlackUserId(say, command.user_id);
+        if (!employeeId) return;
 
-    var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, command.user_id);
-    if (!employeeId) return;
+        customer = await db.searchCustomers(args.customer);
+        if (!customer) {
+            say(`<@${command.user_id}> Customer ${args.customer} not found.`);
+            return;
+        }
 
-    var activeClock = await apputils.getActiveClockFromEmployeeId(say, command.user_id, employeeId);
-    if (!activeClock) return;
+        try {
+            var clocks = await db.getActiveClockFromEmployeeIdAndCustomerId(employeeId, customer.id);
+        } catch (err) {
+            if (err instanceof errors.EntryNotFoundError) {
+                say(`<@${command.user_id}> That session was not found.`);
+                return;
+            } else {
+                throw err;
+            }
+        }
 
-    if (activeClock.start > finished) {
-        say(`<@${command.user_id}> The clockout time you've specified is before the time at which you started`);
+        if (clocks.length > 1) {
+            say(`<@${command.user_id}> You have more than one seesion with ${customer.name}. ` +
+                'Please run this command without the customer argument.');
+            return;
+        }
+
+        if (finished < clocks[0].start) {
+            say(`<@${command.user_id}> The time you finished at is before the time you started.`);
+            return;
+        }
+
+        apputils.clockout(say, command.user_id, finished, clocks[0].id);
         return;
     }
 
-    var customerName = await apputils.getCustomerNameFromId(say, command.user_id, activeClock.customerId);
-    if (!customerName) return;
+    employeeId = await apputils.getEmployeeIdFromSlackUserId(say, command.user_id);
+    if (!employeeId) return;
 
-    db.createFinishedClock(employeeId, activeClock.customerId, time.sqlDatetime(activeClock.start), time.sqlDatetime(finished), activeClock.id);
-    db.deleteActiveClock(activeClock.id);
+    var activeClocks = await apputils.getActiveClocksFromEmployeeId(say, command.user_id, employeeId);
+    if (!activeClocks) return;
 
-    var hrStart = time.humanReadableDate(activeClock.start);
-    var hrFinished = time.humanReadableDate(finished);
-    var timeDifference = time.dateDifference(activeClock.start, finished);
+    var options = [];
+    for (var clock of activeClocks) {
+        customer = await apputils.getCustomerNameFromId(say, command.user_id, clock.customerId);
+        var start = time.humanReadableDate(clock.start);
+        options.push({
+            'text': `${customer} - ${start}`,
+            'id': clock.id
+        });
+    }
 
-    say({ blocks: blocks.clockoutBlocks(customerName, hrStart, hrFinished, timeDifference, activeClock.id) });
+    var id = crypto.randomBytes(16).toString('hex');
+    db.createClockoutResponse(employeeId, finished, id);
+
+    say({ blocks: blocks.clockoutBlocks(command.user_id, id, options) });
 };
 
 module.exports.register = async function({ command, ack, say }) {

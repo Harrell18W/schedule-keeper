@@ -34,13 +34,31 @@ module.exports.createActiveClock = async function(employeeId, customerId, start,
     query(queries.createActiveClock(employeeId, customerId, start, id));
 };
 
-module.exports.getActiveClockFromEmployeeId = async function(employeeId) {
-    [employeeId] = escapeArgs(arguments);
-    var results = await query(queries.getActiveClockFromEmployeeId(employeeId));
-    if (results.length !== 1) {
-        throw new errors.EntryNotFoundError(`No entry found in ActiveClock found with employeeId ${employeeId}`);
+module.exports.getActiveClock = async function(id) {
+    [id] = escapeArgs(arguments);
+    var results = await query(queries.getActiveClock(id));
+    if (results.length < 1) {
+        throw new errors.EntryNotFoundError(`No entires found in ActiveClocks with id ${id}`);
     }
     return results[0];
+};
+
+module.exports.getActiveClocksFromEmployeeId = async function(employeeId) {
+    [employeeId] = escapeArgs(arguments);
+    var results = await query(queries.getActiveClockFromEmployeeId(employeeId));
+    if (results.length < 1) {
+        throw new errors.EntryNotFoundError(`No entries found in ActiveClocks with employeeId ${employeeId}`);
+    }
+    return results;
+};
+
+module.exports.getActiveClockFromEmployeeIdAndCustomerId = async function(employeeId, customerId) {
+    [employeeId, customerId] = escapeArgs(arguments);
+    var results = await query(queries.getActiveClockFromEmployeeIdAndCustomerId(employeeId, customerId));
+    if (results.length < 1) {
+        throw new errors.EntryNotFoundError(`No entries found in ActiveClocks with employeeId ${employeeId} and customerId ${customerId}`);
+    }
+    return results;
 };
 
 module.exports.deleteActiveClock = async function(id) {
@@ -53,9 +71,14 @@ module.exports.checkIfEmployeeHasActiveClocks = async function(employeeId) {
     return Boolean((await query(queries.checkIfEmployeeHasActiveClocks(employeeId))).length);
 };
 
-module.exports.checkIfEmployeeHasSlackResponses = async function(employeeId) {
+module.exports.checkIfEmployeeHasClockinResponses = async function(employeeId) {
     [employeeId] = escapeArgs(arguments);
-    return Boolean((await query(queries.checkIfEmployeeHasSlackResponses(employeeId))).length);
+    return Boolean((await query(queries.checkIfEmployeeHasClockinResponses(employeeId))).length);
+};
+
+module.exports.checkIfEmployeeHasClockoutResponses = async function(employeeId) {
+    [employeeId] = escapeArgs(arguments);
+    return Boolean((await query(queries.checkIfEmployeeHasClockoutResponses(employeeId))).length);
 };
 
 module.exports.getEmployeeIdFromSlackUserId = async function(slackUserId) {
@@ -132,23 +155,42 @@ module.exports.deleteFinishedClock = async function(id) {
     query(queries.deleteFinishedClock(id));
 };
 
-module.exports.createResponse = async function(employeeId, received, start, id) {
+module.exports.createClockinResponse = async function(employeeId, received, start, id) {
     [employeeId, received, start, id] = escapeArgs(arguments);
-    query(queries.createResponse(employeeId, received, start, id));
+    query(queries.createClockinResponse(employeeId, received, start, id));
 };
 
-module.exports.getResponse = async function(id) {
+module.exports.getClockinResponse = async function(id) {
     [id] = escapeArgs(arguments);
-    var results = await query(queries.getResponse(id));
+    var results = await query(queries.getClockinResponse(id));
     if (results.length !== 1) {
         throw new errors.EntryNotFoundError(`No entry in SlackResponses found with id ${id}`);
     }
     return results[0];
 };
 
-module.exports.deleteResponse = async function(id) {
+module.exports.deleteClockinResponse = async function(id) {
     [id] = escapeArgs(arguments);
-    query(queries.deleteResponse(id));
+    query(queries.deleteClockinResponse(id));
+};
+
+module.exports.createClockoutResponse = async function(employeeId, finished, id) {
+    [employeeId, finished, id] = escapeArgs(arguments);
+    query(queries.createClockoutResponse(employeeId, finished, id));
+};
+
+module.exports.getClockoutResponse = async function(id) {
+    [id] = escapeArgs(arguments);
+    var results = await query(queries.getClockoutResponse(id));
+    if (results.length !== 1) {
+        throw new errors.EntryNotFoundError(`No entry in ClockoutResponses found with id ${id}`);
+    }
+    return results[0];
+};
+
+module.exports.deleteClockoutResponse = async function(id) {
+    [id] = escapeArgs(arguments);
+    query(queries.deleteClockoutResponse(id));
 };
 
 this.tableCheck();

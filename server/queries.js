@@ -5,8 +5,16 @@ module.exports.createActiveClock = function(employeeId, customerId, start, id) {
            `(${employeeId}, ${customerId}, ${start}, ${id});`;
 };
 
+module.exports.getActiveClock = function(id) {
+    return `SELECT * FROM ActiveClocks WHERE id = ${id};`;
+};
+
 module.exports.getActiveClockFromEmployeeId = function(employeeId) {
     return `SELECT * FROM ActiveClocks WHERE employeeId = ${employeeId};`;
+};
+
+module.exports.getActiveClockFromEmployeeIdAndCustomerId = function(employeeId, customerId) {
+    return `SELECT * FROM ActiveClocks WHERE employeeId = ${employeeId} AND customerId = ${customerId};`;
 };
 
 module.exports.deleteActiveClock = function(id) {
@@ -25,8 +33,12 @@ module.exports.checkIfEmployeeHasActiveClocks = function(employeeId) {
     return `SELECT id FROM ActiveClocks WHERE employeeId = ${employeeId};`;
 };
 
-module.exports.checkIfEmployeeHasSlackResponses = function(employeeId) {
-    return `SELECT id FROM SlackResponses WHERE employeeId = ${employeeId};`;
+module.exports.checkIfEmployeeHasClockinResponses = function(employeeId) {
+    return `SELECT id FROM ClockinResponses WHERE employeeId = ${employeeId};`;
+};
+
+module.exports.checkIfEmployeeHasClockoutResponses = function(employeeId) {
+    return `SELECT id FROM ClockoutResponses WHERE employeeId = ${employeeId};`;
 };
 
 module.exports.getEmployeeId = function(slackUserId) {
@@ -57,19 +69,34 @@ module.exports.deleteFinishedClock = function(id) {
 
 module.exports.getCustomers = 'SELECT * FROM Customers ORDER BY name;';
 
-module.exports.createResponse = function(employeeId, received, start, id) {
-    return 'INSERT INTO SlackResponses ' +
+module.exports.createClockinResponse = function(employeeId, received, start, id) {
+    return 'INSERT INTO ClockinResponses ' +
            '(employeeId, received, start, id) ' +
            'VALUES ' +
            `(${employeeId}, ${received}, ${start}, ${id});`;
 };
 
-module.exports.getResponse = function(id) {
-    return `SELECT * FROM SlackResponses WHERE id = ${id};`;
+module.exports.getClockinResponse = function(id) {
+    return `SELECT * FROM ClockinResponses WHERE id = ${id};`;
 };
 
-module.exports.deleteResponse = function(id) {
-    return `DELETE FROM SlackResponses WHERE id = ${id};`;
+module.exports.deleteClockinResponse = function(id) {
+    return `DELETE FROM ClockinResponses WHERE id = ${id};`;
+};
+
+module.exports.createClockoutResponse = function(employeeId, finished, id) {
+    return 'INSERT INTO ClockoutResponses ' +
+           '(employeeId, finished, id) ' +
+           'VALUES ' +
+           `(${employeeId}, ${finished}, ${id});`;
+};
+
+module.exports.getClockoutResponse = function(id) {
+    return `SELECT * FROM ClockoutResponses WHERE id = ${id};`;
+};
+
+module.exports.deleteClockoutResponse = function(id) {
+    return `DELETE FROM ClockoutResponses WHERE id = ${id};`;
 };
 
 module.exports.checks = 
@@ -109,20 +136,17 @@ module.exports.checks =
     );',
 
     '\
-    CREATE TABLE IF NOT EXISTS HandledClocks (\
+    CREATE TABLE IF NOT EXISTS ClockinResponses (\
         employeeId CHAR(32) NOT NULL,\
-        customerId CHAR(32) NOT NULL,\
+        received DATETIME NOT NULL,\
         start DATETIME NOT NULL,\
-        end DATETIME NOT NULL,\
-        handledOn DATETIME NOT NULL,\
         id CHAR(32) NOT NULL\
     );',
 
     '\
-    CREATE TABLE IF NOT EXISTS SlackResponses (\
+    CREATE TABLE IF NOT EXISTS ClockoutResponses (\
         employeeId CHAR(32) NOT NULL,\
-        received DATETIME NOT NULL,\
-        start DATETIME NOT NULL,\
+        finished DATETIME NOT NULL,\
         id CHAR(32) NOT NULL\
     );'
 ];
