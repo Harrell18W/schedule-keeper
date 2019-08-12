@@ -117,6 +117,7 @@ def enter_finished_jobs(main_window):
             main_window.show_error('No job selected.')
             return
         inserted = []
+        inserted_ids = []
         for selection in selected:
             top_row = selection.topRow()
             bottom_row = selection.bottomRow()
@@ -142,8 +143,10 @@ def enter_finished_jobs(main_window):
                     return
                 inserted.append(msg)
                 job_id = tw.item(row, 5).text()
-                main_window.db.delete_finished_clock(job_id)
+                inserted_ids.append(job_id)
         workbook.save()
+        for job_id in inserted_ids:
+            main_window.db.delete_finished_clock(job_id)
         refresh_jobs(main_window)
         # not an error but shh
         msg = 'Inserted the following data into the spreadsheet:\n\n'
