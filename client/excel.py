@@ -68,11 +68,10 @@ class Spreadsheet(object):
                 % date.strftime('%b %d %Y')
         cell = self.active_sheet.cell(row=row, column=column)
         column_letter = pyxl.utils.get_column_letter(column)
-        value = round(hours, 3)
         try:
-            cell.value = cell.value + value if cell.value else value
+            cell.value = cell.value + hours if cell.value else hours
         except TypeError:
             return False, 'Invalid data exists in cell ' \
                 '%s%d.' % (column_letter, row)
-        return True, '%s, %s, %.3f hours (%s%d)' \
-            % (customer, date.strftime('%b %d %Y'), value, column_letter, row)
+        return True, '%s, %s, %.2f hours (%s%d)' \
+            % (customer, date.strftime('%b %d %Y'), hours, column_letter, row)
