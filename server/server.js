@@ -11,6 +11,7 @@ const app = new App({
 });
 
 app.command('/clockin', commands.clockinResponse);
+app.command('/clockintt', commands.clockinTravelResponse);
 app.command('/clockout', commands.clockoutResponse);
 app.command('/register', commands.register);
 

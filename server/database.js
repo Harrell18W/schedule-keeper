@@ -29,9 +29,10 @@ module.exports.tableCheck = function() {
     }
 };
 
-module.exports.createActiveClock = async function(employeeId, customerId, start, id) {
-    [employeeId, customerId, start, id] = escapeArgs(arguments);
-    query(queries.createActiveClock(employeeId, customerId, start, id));
+module.exports.createActiveClock = async function(employeeId, customerId, start, travel, id) {
+    [employeeId, customerId, start, travel, id] = escapeArgs(arguments);
+    console.log(travel);
+    query(queries.createActiveClock(employeeId, customerId, start, travel, id));
 };
 
 module.exports.getActiveClock = async function(id) {
@@ -136,9 +137,9 @@ module.exports.searchCustomers = async function(identifier) {
     return null;
 };
 
-module.exports.createFinishedClock = async function(employeeId, customerId, start, finished, id) {
-    [employeeId, customerId, start, finished, id] = escapeArgs(arguments); 
-    query(queries.createFinishedClock(employeeId, customerId, start, finished, id));
+module.exports.createFinishedClock = async function(employeeId, customerId, start, finished, travel, id) {
+    [employeeId, customerId, start, finished, travel, id] = escapeArgs(arguments); 
+    query(queries.createFinishedClock(employeeId, customerId, start, finished, travel, id));
 };
 
 module.exports.getFinishedClock = async function(id) {
@@ -155,9 +156,9 @@ module.exports.deleteFinishedClock = async function(id) {
     query(queries.deleteFinishedClock(id));
 };
 
-module.exports.createClockinResponse = async function(employeeId, received, start, id) {
-    [employeeId, received, start, id] = escapeArgs(arguments);
-    query(queries.createClockinResponse(employeeId, received, start, id));
+module.exports.createClockinResponse = async function(employeeId, received, start, travel, id) {
+    [employeeId, received, start, travel, id] = escapeArgs(arguments);
+    query(queries.createClockinResponse(employeeId, received, start, travel, id));
 };
 
 module.exports.getClockinResponse = async function(id) {

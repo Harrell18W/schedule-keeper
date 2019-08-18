@@ -51,13 +51,17 @@ module.exports.clockinBlocks = function(slackUserId, id, customers) {
     ];
 };
 
-module.exports.clockinReponseBlocks = function(customer, time, id) {
+module.exports.clockinReponseBlocks = function(customer, time, travel, id) {
+    var text = ':clock4: Clocked in\n\n';
+    text += `*Customer:* ${customer}\n`;
+    text += `*Time:* ${time}\n`;
+    text += '*Travel:* ' + (travel ? 'Yes' : 'No');
     return [
         {
             'type': 'section',
             'text': {
                 'type': 'mrkdwn',
-                'text': `:clock4: Clocked in\n\n*Customer:* ${customer}\n*Time:* ${time}`
+                'text': text
             }
         },
         {

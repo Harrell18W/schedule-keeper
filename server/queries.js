@@ -1,8 +1,8 @@
-module.exports.createActiveClock = function(employeeId, customerId, start, id) {
+module.exports.createActiveClock = function(employeeId, customerId, start, travel, id) {
     return 'INSERT INTO ActiveClocks ' +
-           '(employeeId, customerId, start, id) ' +
+           '(employeeId, customerId, start, travel, id) ' +
            'VALUES ' +
-           `(${employeeId}, ${customerId}, ${start}, ${id});`;
+           `(${employeeId}, ${customerId}, ${start}, ${travel}, ${id});`;
 };
 
 module.exports.getActiveClock = function(id) {
@@ -52,11 +52,11 @@ module.exports.registerEmployee = function(slackUsername, slackUserId, id) {
            `(${slackUsername}, "REGISTER", ${slackUserId}, ${id});`;
 };
 
-module.exports.createFinishedClock = function(employeeId, customerId, start, end, id) {
+module.exports.createFinishedClock = function(employeeId, customerId, start, end, travel, id) {
     return 'INSERT INTO FinishedClocks ' +
-           '(employeeId, customerId, start, end, id) ' +
+           '(employeeId, customerId, start, end, travel, id) ' +
            'VALUES ' +
-           `(${employeeId}, ${customerId}, ${start}, ${end}, ${id});`;
+           `(${employeeId}, ${customerId}, ${start}, ${end}, ${travel}, ${id});`;
 };
 
 module.exports.getFinishedClock = function(id) {
@@ -69,11 +69,11 @@ module.exports.deleteFinishedClock = function(id) {
 
 module.exports.getCustomers = 'SELECT * FROM Customers ORDER BY name;';
 
-module.exports.createClockinResponse = function(employeeId, received, start, id) {
+module.exports.createClockinResponse = function(employeeId, received, start, travel, id) {
     return 'INSERT INTO ClockinResponses ' +
-           '(employeeId, received, start, id) ' +
+           '(employeeId, received, start, travel, id) ' +
            'VALUES ' +
-           `(${employeeId}, ${received}, ${start}, ${id});`;
+           `(${employeeId}, ${received}, ${start}, ${travel}, ${id});`;
 };
 
 module.exports.getClockinResponse = function(id) {
@@ -123,6 +123,7 @@ module.exports.checks =
         employeeId CHAR(32) NOT NULL,\
         customerId CHAR(32) NOT NULL,\
         start DATETIME NOT NULL,\
+        travel BOOLEAN NOT NULL,\
         id CHAR(32) NOT NULL\
     );',
 
@@ -132,6 +133,7 @@ module.exports.checks =
         customerId CHAR(32) NOT NULL,\
         start DATETIME NOT NULL,\
         end DATETIME NOT NULL,\
+        travel BOOLEAN NOT NULL,\
         id CHAR(32) NOT NULL\
     );',
 
@@ -140,6 +142,7 @@ module.exports.checks =
         employeeId CHAR(32) NOT NULL,\
         received DATETIME NOT NULL,\
         start DATETIME NOT NULL,\
+        travel BOOLEAN NOT NULL,\
         id CHAR(32) NOT NULL\
     );',
 

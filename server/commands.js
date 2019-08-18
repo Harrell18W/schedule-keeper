@@ -48,7 +48,7 @@ function timeParser(say, timeArg, slackUserId) {
     }
 }
 
-module.exports.clockinResponse = async function ({ command, ack, say }) {
+module.exports.clockinResponse = async function({ command, ack, say }) {
     ack();
 
     var args = argParser(command.text);
@@ -61,7 +61,7 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
         start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     }
     if (args.customer) {
-        apputils.clockin(say, command.user_id, args.customer, start, id);
+        apputils.clockin(say, command.user_id, args.customer, start, false, id);
         return;
     }
 
@@ -81,10 +81,49 @@ module.exports.clockinResponse = async function ({ command, ack, say }) {
         return;
     }
 
-
     var responseBlocks = blocks.clockinBlocks(command.user_id, id, customers);
 
     db.createClockinResponse(employeeId, time.sqlDatetime(now), time.sqlDatetime(start), id);
+
+    say({ blocks: responseBlocks });
+};
+
+module.exports.clockinTravelResponse = async function({ command, ack, say }) {
+    ack();
+
+    var args = argParser(command.text);
+    var now = new Date();
+    var start = now;
+    var id = crypto.randomBytes(16).toString('hex');
+    if (args.time) {
+        var { hour, minute } = timeParser(say, args.time, command.user_id);
+        if (!hour && hour !== 0) return;
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+    }
+    if (args.customer) {
+        apputils.clockin(say, command.user_id, args.customer, start, true, id);
+        return;
+    }
+
+    var employeeId = await apputils.getEmployeeIdFromSlackUserId(say, command.user_id);
+    if (!employeeId) return;
+
+    if (await db.checkIfEmployeeHasClockinResponses(employeeId)) {
+        say(`<@${command.user_id}> You've already gotten a check out message. ` +
+            'Please use that one before requesting another.');
+        return;
+    }
+
+    var customers = await db.getCustomers();
+
+    if (customers.length === 0) {
+        say(`No customers in database.`);
+        return;
+    }
+
+    var responseBlocks = blocks.clockinBlocks(command.user_id, id, customers);
+
+    db.createClockinResponse(employeeId, time.sqlDatetime(now), time.sqlDatetime(start), true, id);
 
     say({ blocks: responseBlocks });
 };

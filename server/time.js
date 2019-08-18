@@ -1,10 +1,9 @@
 const errors = require('./errors');
 
-module.exports.dateDifference = function(date1, date2) {
+module.exports.dateDifference = function(date1, date2, travel) {
     var millis = date2 - date1;
-    if (date1 > date2) {
+    if (date1 > date2)
         millis = date1 - date2;
-    }
 
     var hours = Math.floor(millis / 3600000);
     millis = millis - hours * 3600000;

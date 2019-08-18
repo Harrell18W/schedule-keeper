@@ -19,7 +19,7 @@ module.exports.clockinRequestResponse = async function({ ack, say, action, body 
         return;
     }
 
-    apputils.clockin(say, body.user.id, customerName, response.start, responseId);
+    apputils.clockin(say, body.user.id, customerName, response.start, response.travel, responseId);
     await db.deleteClockinResponse(responseId);
 };
 

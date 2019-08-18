@@ -3,7 +3,7 @@ const db = require('./database');
 const errors = require('./errors');
 const time = require('./time');
 
-module.exports.clockin = async function(say, slackUserId, customerName, start, id) {
+module.exports.clockin = async function(say, slackUserId, customerName, start, travel, id) {
     var employeeId = await this.getEmployeeIdFromSlackUserId(say, slackUserId);
     if (!employeeId) return;
 
@@ -19,15 +19,17 @@ module.exports.clockin = async function(say, slackUserId, customerName, start, i
         return;
     }
 
-    db.createActiveClock(employeeId, customer.id, time.sqlDatetime(start), id);
+    db.createActiveClock(employeeId, customer.id, time.sqlDatetime(start), travel, id);
 
     var hrDate = start.toString().substring(0, 24);
-    say({ blocks: blocks.clockinReponseBlocks(customerName, hrDate, id) });
+    say({ blocks: blocks.clockinReponseBlocks(customerName, hrDate, travel, id) });
 };
 
 module.exports.clockout = async function(say, slackUserId, end, id) {
     var activeClock = await this.getActiveClock(say, slackUserId, id);
     if (!activeClock) return;
+
+    var travel = activeClock.travel;
 
     var employeeId = await this.getEmployeeIdFromSlackUserId(say, slackUserId);
     if (!employeeId) return;
@@ -35,10 +37,12 @@ module.exports.clockout = async function(say, slackUserId, end, id) {
     var customerName = await this.getCustomerNameFromId(say, slackUserId, activeClock.customerId);
     if (!customerName) return;
 
-    db.createFinishedClock(employeeId, activeClock.customerId, time.sqlDatetime(activeClock.start), time.sqlDatetime(end), id);
+    db.createFinishedClock(employeeId, activeClock.customerId, time.sqlDatetime(activeClock.start), time.sqlDatetime(end), travel, id);
     db.deleteActiveClock(id);
 
     var timeDifference = time.dateDifference(activeClock.start, end);
+    if (travel)
+        timeDifference += ' (+30 mins for travel)';
     say({ blocks: blocks.clockoutResponseBlocks(customerName, time.humanReadableDate(activeClock.start), time.humanReadableDate(end), timeDifference, id)});
 };
 
