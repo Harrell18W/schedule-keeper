@@ -17,10 +17,12 @@ def quarter_round(hours):
     return total
 
 
-def time_elapsed(dt1, dt2):
+def time_elapsed(dt1, dt2, travel):
     delta = dt1 - dt2 if dt1 > dt2 else dt2 - dt1
     hours = delta.seconds // 3600
     minutes = (delta.seconds - hours * 3600) // 60
+    if travel:
+        minutes += 30
     hours_float = quarter_round(hours + (minutes / 60))
     if hours:
         return '%d hours, %d minutes (%.2f)' % (hours, minutes, hours_float)

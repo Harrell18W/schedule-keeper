@@ -7,10 +7,10 @@ from openpyxl.utils.exceptions import InvalidFileException
 import apputils
 from excel import Spreadsheet
 
-active_jobs_header_items = ['Customer', 'Employee', 'Started', 'Time Elapsed']
-active_jobs_header_items += ['ID']
+active_jobs_header_items = ['Customer', 'Employee', 'Started', 'Travel']
+active_jobs_header_items += ['Time Elapsed', 'ID']
 finished_jobs_header_items = ['Customer', 'Employee', 'Started', 'Finished']
-finished_jobs_header_items += ['Time Elapsed', 'ID']
+finished_jobs_header_items += ['Travel', 'Time Elapsed', 'ID']
 
 
 def tablewidgets_setup(main_window):
@@ -54,9 +54,11 @@ def refresh_jobs(main_window):
             active_tw.setItem(row, 1, employee_item)
             started_item = QTableWidgetItem(job[2].strftime('%b %d, %I:%M%p'))
             active_tw.setItem(row, 2, started_item)
-            time_elapsed = apputils.time_elapsed(job[2], job[2].now())
-            active_tw.setItem(row, 3, QTableWidgetItem(time_elapsed))
-            active_tw.setItem(row, 4, QTableWidgetItem(job[3]))
+            time_elapsed = apputils.time_elapsed(job[2], job[2].now(), job[3])
+            travel = 'Yes' if job[3] else 'No'
+            active_tw.setItem(row, 3, QTableWidgetItem(travel))
+            active_tw.setItem(row, 4, QTableWidgetItem(time_elapsed))
+            active_tw.setItem(row, 5, QTableWidgetItem(job[3]))
         active_tw.sortItems(0)
 
         finished_jobs = main_window.db.get_finished_clocks()
@@ -80,9 +82,11 @@ def refresh_jobs(main_window):
             finished_tw.setItem(row, 2, started_item)
             finished_item = QTableWidgetItem(job[3].strftime('%b %d, %I:%M%p'))
             finished_tw.setItem(row, 3, finished_item)
-            time_elapsed = apputils.time_elapsed(job[2], job[3])
-            finished_tw.setItem(row, 4, QTableWidgetItem(time_elapsed))
-            finished_tw.setItem(row, 5, QTableWidgetItem(job[4]))
+            travel = 'Yes' if job[4] else 'No'
+            finished_tw.setItem(row, 4, QTableWidgetItem(travel))
+            time_elapsed = apputils.time_elapsed(job[2], job[3], job[4])
+            finished_tw.setItem(row, 5, QTableWidgetItem(time_elapsed))
+            finished_tw.setItem(row, 6, QTableWidgetItem(job[4]))
         finished_tw.sortItems(0)
 
     tablewidgets_setup(main_window)
@@ -101,7 +105,7 @@ def delete_active_job(main_window):
         top_row = selected[0].topRow()
         bottom_row = selected[0].bottomRow()
         for row in range(top_row, bottom_row + 1):
-            job_id = tw.item(row, 4).text()
+            job_id = tw.item(row, 5).text()
             main_window.db.delete_active_clock(job_id)
         refresh_jobs(main_window)
 
@@ -134,7 +138,7 @@ def enter_finished_jobs(main_window):
                 finished = dt.datetime.strptime(finished_str,
                                                 '%b %d, %I:%M%p %Y')
                 customer = tw.item(row, 0).text()
-                elapsed_str = tw.item(row, 4).text()
+                elapsed_str = tw.item(row, 5).text()
                 elapsed = apputils.time_elapsed_to_hours(elapsed_str)
                 ok, msg = workbook.insert_job(finished, customer, elapsed)
                 if not ok:
@@ -142,7 +146,7 @@ def enter_finished_jobs(main_window):
                     main_window.show_error(msg)
                     return
                 inserted.append(msg)
-                job_id = tw.item(row, 5).text()
+                job_id = tw.item(row, 6).text()
                 inserted_ids.append(job_id)
         workbook.save()
         for job_id in inserted_ids:
@@ -168,7 +172,7 @@ def delete_finished_job(main_window):
         top_row = selected[0].topRow()
         bottom_row = selected[0].bottomRow()
         for row in range(top_row, bottom_row + 1):
-            job_id = tw.item(row, 5).text()
+            job_id = tw.item(row, 6).text()
             main_window.db.delete_finished_clock(job_id)
         refresh_jobs(main_window)
 
