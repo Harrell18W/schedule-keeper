@@ -143,7 +143,7 @@ module.exports.clockoutBlocks = function(slackUserId, id, customers) {
     ];
 };
 
-module.exports.clockoutResponseBlocks = function(customer, start, end, time, id) {
+module.exports.clockoutResponseBlocks = function(customer, start, end, time, travel, id) {
     return [
         {
             'type': 'section',
@@ -153,6 +153,7 @@ module.exports.clockoutResponseBlocks = function(customer, start, end, time, id)
                         `*Customer:* ${customer}\n` +
                         `*Start:* ${start}\n` +
                         `*End:* ${end}\n` +
+                        `*Travel:* ${travel ? 'Yes' : 'No'}\n` +
                         `*Time:* ${time}`
             }
         },
@@ -169,6 +170,47 @@ module.exports.clockoutResponseBlocks = function(customer, start, end, time, id)
                     },
                     'style': 'danger',
                     'value': 'session_clockout'
+                }
+            ]
+        }
+    ];
+};
+
+module.exports.nicknameSelectBlocks = function(slackUserId, customers) {
+    var customers_items = [];
+    for (const customer of customers) {
+        customers_items.push(
+            {
+                'text': {
+                    'type': 'plain_text',
+                    'text': customer.name
+                },
+                'value': customer.id
+            }
+        );
+    }
+
+    return [
+        {
+            'type': 'section',
+            'block_id': 'clock_out_mainresponse',
+            'text': {
+                'type': 'mrkdwn',
+                'text': `<@${slackUserId}> Please choose a customer from the list:`
+            }
+        },
+        {
+            'type': 'actions',
+            'block_id': 'clockout_elements',
+            'elements': [
+                {
+                    'action_id': 'nickname',
+                    'type': 'static_select',
+                    'placeholder': {
+                        'type': 'plain_text',
+                        'text': 'Choose a customer'
+                    },
+                    'options': customers_items
                 }
             ]
         }

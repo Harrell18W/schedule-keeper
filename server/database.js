@@ -31,7 +31,6 @@ module.exports.tableCheck = function() {
 
 module.exports.createActiveClock = async function(employeeId, customerId, start, travel, id) {
     [employeeId, customerId, start, travel, id] = escapeArgs(arguments);
-    console.log(travel);
     query(queries.createActiveClock(employeeId, customerId, start, travel, id));
 };
 

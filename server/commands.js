@@ -83,7 +83,7 @@ module.exports.clockinResponse = async function({ command, ack, say }) {
 
     var responseBlocks = blocks.clockinBlocks(command.user_id, id, customers);
 
-    db.createClockinResponse(employeeId, time.sqlDatetime(now), time.sqlDatetime(start), id);
+    db.createClockinResponse(employeeId, time.sqlDatetime(now), time.sqlDatetime(start), false, id);
 
     say({ blocks: responseBlocks });
 };
@@ -117,7 +117,7 @@ module.exports.clockinTravelResponse = async function({ command, ack, say }) {
     var customers = await db.getCustomers();
 
     if (customers.length === 0) {
-        say(`No customers in database.`);
+        say('No customers in database.');
         return;
     }
 
@@ -197,6 +197,18 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
     db.createClockoutResponse(employeeId, finished, id);
 
     say({ blocks: blocks.clockoutBlocks(command.user_id, id, options) });
+};
+
+module.exports.nicknames = async function({ command, ack, say }) {
+    ack();
+
+    var customers = await db.getCustomers();
+    if (customers.length < 1) {
+        say(`<@${command.user_id}> No customers in database.`);
+        return;
+    }
+
+    say({ blocks: blocks.nicknameSelectBlocks(command.user_id, customers) });
 };
 
 module.exports.register = async function({ command, ack, say }) {

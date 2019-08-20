@@ -69,14 +69,17 @@ module.exports.clockoutRequestResponse = async function({ ack, say, action, body
     var customer = await apputils.getCustomerNameFromId(say, body.user.id, activeClock.customerId);
     if (!customer) return;
 
-    db.createFinishedClock(activeClock.employeeId, activeClock.customerId, activeClock.start, response.finished, activeClockId);
+    db.createFinishedClock(activeClock.employeeId, activeClock.customerId, activeClock.start, response.finished, activeClock.travel, activeClockId);
     db.deleteActiveClock(activeClockId);
     db.deleteClockoutResponse(responseId);
 
     var start = time.humanReadableDate(activeClock.start);
     var finished = time.humanReadableDate(response.finished);
     var elapsed = time.dateDifference(activeClock.start, response.finished);
-    say({ blocks: blocks.clockoutResponseBlocks(customer, start, finished, elapsed, activeClockId) });
+    if (activeClock.travel)
+        elapsed += ' (+30 mins for travel)';
+
+    say({ blocks: blocks.clockoutResponseBlocks(customer, start, finished, elapsed, activeClock.travel, activeClockId) });
 };
 
 module.exports.clockoutRequestCancel = async function({ ack, say, action, body }) {
@@ -141,4 +144,31 @@ module.exports.sessionCancel = async function({ ack, say, action, body }) {
     db.deleteFinishedClock(finishedClockId);
 
     say(`<@${body.user.id}> Your finished session with ${customerName} was deleted`);
+};
+
+module.exports.listNicknames = async function({ ack, say, action, body }) {
+    ack();
+
+    var customerId = action.selected_option.value;
+    var result = await db.getCustomerFromId(customerId);
+    if (result.length < 1) {
+        say(`<@${body.user.id}> Customer not found.`)
+        return;
+    }
+
+    if (result.customShorthands === '[]') {
+        say(`<@${body.user.id}> ${result.name} has no nicknames.`);
+        return;
+    }
+
+    var nicknames = result.customShorthands.substring(1, result.customShorthands.length - 1).split(',');
+
+    var text = `<@${body.user.id}> Nicknames for ${result.name}:`;
+    for (var dirtyNickname of nicknames) {
+        var stripped = dirtyNickname.replace(/s+/g, '');
+        var nickname = stripped.substring(1, stripped.length - 1);
+        text += `\n${nickname}`;
+    }
+
+    say(text);
 };

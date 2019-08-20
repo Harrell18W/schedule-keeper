@@ -43,7 +43,7 @@ module.exports.clockout = async function(say, slackUserId, end, id) {
     var timeDifference = time.dateDifference(activeClock.start, end);
     if (travel)
         timeDifference += ' (+30 mins for travel)';
-    say({ blocks: blocks.clockoutResponseBlocks(customerName, time.humanReadableDate(activeClock.start), time.humanReadableDate(end), timeDifference, id)});
+    say({ blocks: blocks.clockoutResponseBlocks(customerName, time.humanReadableDate(activeClock.start), time.humanReadableDate(end), timeDifference, activeClock.travel, id)});
 };
 
 module.exports.getClockinResponse = async function(say, slackUserId, responseId) {
