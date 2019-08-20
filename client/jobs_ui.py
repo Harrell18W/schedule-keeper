@@ -58,7 +58,7 @@ def refresh_jobs(main_window):
             travel = 'Yes' if job[3] else 'No'
             active_tw.setItem(row, 3, QTableWidgetItem(travel))
             active_tw.setItem(row, 4, QTableWidgetItem(time_elapsed))
-            active_tw.setItem(row, 5, QTableWidgetItem(job[3]))
+            active_tw.setItem(row, 5, QTableWidgetItem(job[4]))
         active_tw.sortItems(0)
 
         finished_jobs = main_window.db.get_finished_clocks()
@@ -86,7 +86,7 @@ def refresh_jobs(main_window):
             finished_tw.setItem(row, 4, QTableWidgetItem(travel))
             time_elapsed = apputils.time_elapsed(job[2], job[3], job[4])
             finished_tw.setItem(row, 5, QTableWidgetItem(time_elapsed))
-            finished_tw.setItem(row, 6, QTableWidgetItem(job[4]))
+            finished_tw.setItem(row, 6, QTableWidgetItem(job[5]))
         finished_tw.sortItems(0)
 
     tablewidgets_setup(main_window)
@@ -114,17 +114,20 @@ def delete_active_job(main_window):
 
 def enter_finished_jobs(main_window):
     tw = main_window.window.finishedjobs_tablewidget
+    checkbox = main_window.window.delete_after_entering_checkbox
 
     def inner():
         selected = tw.selectedRanges()
         if len(selected) == 0:
             main_window.show_error('No job selected.')
             return
+
         inserted = []
         inserted_ids = []
         for selection in selected:
             top_row = selection.topRow()
             bottom_row = selection.bottomRow()
+
             try:
                 workbook = Spreadsheet(main_window.excel_filename)
             except InvalidFileException:
@@ -132,6 +135,7 @@ def enter_finished_jobs(main_window):
                 main_window.show_error(msg)
                 return
             workbook.backup(main_window.config['Directories']['backup'])
+
             for row in range(top_row, bottom_row + 1):
                 current_year = str(dt.datetime.today().year)
                 finished_str = tw.item(row, 3).text() + ' ' + current_year
@@ -140,6 +144,7 @@ def enter_finished_jobs(main_window):
                 customer = tw.item(row, 0).text()
                 elapsed_str = tw.item(row, 5).text()
                 elapsed = apputils.time_elapsed_to_hours(elapsed_str)
+
                 ok, msg = workbook.insert_job(finished, customer, elapsed)
                 if not ok:
                     msg += '\nNo changes were made to the Excel workbook.'
@@ -148,10 +153,15 @@ def enter_finished_jobs(main_window):
                 inserted.append(msg)
                 job_id = tw.item(row, 6).text()
                 inserted_ids.append(job_id)
+
         workbook.save()
-        for job_id in inserted_ids:
-            main_window.db.delete_finished_clock(job_id)
-        refresh_jobs(main_window)
+
+        if checkbox.isChecked():
+            for job_id in inserted_ids:
+                print(job_id)
+                main_window.db.delete_finished_clock(job_id)
+            refresh_jobs(main_window)
+
         # not an error but shh
         msg = 'Inserted the following data into the spreadsheet:\n\n'
         for item in inserted:

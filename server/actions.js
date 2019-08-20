@@ -152,7 +152,7 @@ module.exports.listNicknames = async function({ ack, say, action, body }) {
     var customerId = action.selected_option.value;
     var result = await db.getCustomerFromId(customerId);
     if (result.length < 1) {
-        say(`<@${body.user.id}> Customer not found.`)
+        say(`<@${body.user.id}> Customer not found.`);
         return;
     }
 
@@ -165,8 +165,7 @@ module.exports.listNicknames = async function({ ack, say, action, body }) {
 
     var text = `<@${body.user.id}> Nicknames for ${result.name}:`;
     for (var dirtyNickname of nicknames) {
-        var stripped = dirtyNickname.replace(/s+/g, '');
-        var nickname = stripped.substring(1, stripped.length - 1);
+        var nickname = dirtyNickname.replace(/\s+|"/g, '');
         text += `\n${nickname}`;
     }
 
