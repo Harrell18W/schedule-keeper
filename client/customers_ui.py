@@ -67,15 +67,16 @@ def get_nicknames(main_window):
 def check_for_existing(main_window, name, nicknames):
     existing_customers = main_window.db.get_customers()
     for customer in existing_customers:
-        for nickname in nicknames:
-            if nickname == customer[0].upper():
-                msg = 'A customer exists with name %s.' % customer[0]
-                main_window.show_error(msg)
-                return False
-            if nickname in parse_nicknames_list(customer[1].upper()):
-                msg = 'A customer exists with nickname %s.' % nickname
-                main_window.show_error(msg)
-                return False
+        if customer[0] != name:
+            for nickname in nicknames:
+                if nickname == customer[0].upper():
+                    msg = 'A customer exists with name %s.' % customer[0]
+                    main_window.show_error(msg)
+                    return False
+                if nickname in parse_nicknames_list(customer[1].upper()):
+                    msg = 'A customer exists with nickname %s.' % nickname
+                    main_window.show_error(msg)
+                    return False
     return True
 
 
@@ -98,7 +99,7 @@ def add_nickname(main_window):
         if not bool(nickname_re.match(nickname)):
             main_window.show_error('Invalid nickname: %s' % nickname)
             return
-        if nickname == name:
+        if nickname == name.upper():
             main_window.show_error('Cannot use customer name as nickname.')
             return
         if nickname in get_nicknames(main_window):
