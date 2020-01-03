@@ -93,6 +93,9 @@
         </item>
         <item alignment="Qt::AlignHCenter">
          <widget class="QCheckBox" name="delete_after_entering_checkbox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="text">
            <string>Delete After Entering</string>
           </property>
@@ -100,7 +103,7 @@
            <bool>true</bool>
           </property>
           <property name="checked">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="tristate">
            <bool>false</bool>
