@@ -40,7 +40,7 @@ module.exports.clockinBlocks = function(slackUserId, id, customers) {
                     'type': 'button',
                     'text': {
                         'type': 'plain_text',
-                        'text': ':x: Cancel'
+                        'text': ':x: Cancel Clockin Request'
                     },
                     'style': 'danger',
                     'value': 'cancel',
@@ -82,7 +82,7 @@ module.exports.clockinReponseBlocks = function(customer, time, travel, id) {
                     'type': 'button',
                     'text': {
                         'type': 'plain_text',
-                        'text': ':x: Cancel'
+                        'text': ':x: Cancel Clockin'
                     },
                     'style': 'danger',
                     'value': id
@@ -132,7 +132,7 @@ module.exports.clockoutBlocks = function(slackUserId, id, customers) {
                     'type': 'button',
                     'text': {
                         'type': 'plain_text',
-                        'text': ':x: Cancel'
+                        'text': ':x: Cancel Clockout Request'
                     },
                     'style': 'danger',
                     'value': 'cancel',
@@ -166,7 +166,7 @@ module.exports.clockoutResponseBlocks = function(customer, start, end, time, tra
                     'type': 'button',
                     'text': {
                         'type': 'plain_text',
-                        'text': ':x: Cancel'
+                        'text': ':x: Undo and Delete Hours'
                     },
                     'style': 'danger',
                     'value': 'session_clockout'
