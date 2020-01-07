@@ -45,9 +45,11 @@ module.exports.timeParameter = function(timeArg) {
     if (/^(\d{1,2})([ap]m?)?$/i.test(timeArg)) {
         var match = /^(\d{1,2})([ap]m?)?$/i.exec(timeArg);
         hour = Number(match[1]);
-        if (timeArg.includes('p') || isPM())
+        if (timeArg.includes('p') || isPM()) {
             hour += 12;
-        hour = hour == 24 && timeArg.includes('p') ? 12 : hour;
+            if (hour == 24)
+                hour = 12;
+        }
         minute = 0;
     } else if (/^\d{3}([ap]m?)?$/i.test(timeArg)) {
         digits = timeArg.substring(0, 3);
