@@ -32,7 +32,12 @@ in the above order.
 After selecting a customer (if not given in command), a reply will be sent with 
 two buttons:
 * Clock Out: Signal that you have stopped working with the customer
-* Cancel: Delete this session from the database (aka undo)
+* Cancel Clockin: Delete this session from the database (aka undo)
+
+## /clockintt
+
+Same as /clockout (above), but will automatically add travel time to the job. This is
+used the same way as /clockin.
 
 ## /clockout
 
@@ -45,11 +50,24 @@ Arguments:
     * Can be a time in the future, but cannot be a time that precedes when you
     started working
     * See time section for acceptable inputs
+* customer (optional)
+    * State the customer you are working for
+    * If used, you will not be asked to select a customer
+    * This can be either the full name of the customer, or a nickname established
+    in the client program
+    * Not case sensitive
+    * Ex: Apple, APL, apl
 
 Using the Clock Out button in the reply of the /clockin command is equivalent to running
 this command with no time argument.
 
-This will reply with information about your session, and another Cancel button.
+This will reply with information about your session. There will also be a button to undo
+and delete the logged hours.
+
+## /nicknames
+
+Lists all the nicknames for a customer. Send the command, then select the customer from the
+drop down.
 
 ## time arguments
 
@@ -60,5 +78,7 @@ There are many different ways to explicitly give a time to the bot:
 * 1200, 1200pm, 1200p are all equivalent
 
 Note that the M in AM/PM is not necessary, nor is the case of AM/PM. 
+If you do not specify AM or PM, the bot will assume the same 12-hour section as when
+the command was sent.
 Also note that even though 0:00am is technically not a valid time stamp, it will still be
 accepted as being equivalent to 00:00.

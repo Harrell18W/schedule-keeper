@@ -32,5 +32,9 @@ yet ended.
 the job.
 * Active Jobs should only be deleted if there was a mistake made by someone, and the time that
 was supposed to be spent with a customer was not valid.
-* Finished Jobs should be deleted after they have manually been entered into the Excel file.
-3. Click Refresh to check for changes.
+* Finished Jobs should be deleted after they have been entered into the Excel file. The checkbox
+at the bottom will automatically delete jobs after they have been entered into the spreadsheet.
+3. Select Finished Jobs and click "Enter Selected into Spreadsheet" to enter the jobs. If it
+succeeds, a dialog will appear with the affected cell numbers. If it fails, a dialog will appear
+with details and no changes will be saved.
+4. Click Refresh to check for changes.
