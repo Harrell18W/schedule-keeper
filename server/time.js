@@ -2,11 +2,14 @@ const errors = require('./errors');
 
 function currentTime() {
     var dUTC = new Date();
-    var milliseconds = dUTC.getMilliseconds() - 18000000;
+    console.log(dUTC);
+    var milliseconds = dUTC.getTime() - 18000000;
+    console.log(new Date(milliseconds));
     return new Date(milliseconds);
 }
 
 function isPM() {
+    console.log(currentTime().getHours());
     return currentTime().getHours() >= 12;
 }
 
@@ -36,6 +39,8 @@ module.exports.sqlDatetime = function(date) {
 };
 
 module.exports.timeParameter = function(timeArg) {
+    if (isPM()) console.log('is PM');
+
     timeArg = timeArg.toLowerCase();
 
     var digits;
@@ -52,6 +57,7 @@ module.exports.timeParameter = function(timeArg) {
         }
         minute = 0;
     } else if (/^\d{3}([ap]m?)?$/i.test(timeArg)) {
+        console.log(2);
         digits = timeArg.substring(0, 3);
         hour = Number(digits.substring(0, 1));
         if (timeArg.includes('p') || isPM())
