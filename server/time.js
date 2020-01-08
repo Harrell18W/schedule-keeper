@@ -2,7 +2,7 @@ const errors = require('./errors');
 
 function currentTime() {
     var dUTC = new Date();
-    var milliseconds = dUTC.getMilliseconds() - 18000000;
+    var milliseconds = dUTC.getTime() - 18000000;
     return new Date(milliseconds);
 }
 
