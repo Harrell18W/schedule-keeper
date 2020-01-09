@@ -45,7 +45,7 @@ module.exports.timeParameter = function(timeArg) {
     if (/^(\d{1,2})([ap]m?)?$/i.test(timeArg)) {
         var match = /^(\d{1,2})([ap]m?)?$/i.exec(timeArg);
         hour = Number(match[1]);
-        if (timeArg.includes('p') || isPM()) {
+        if (timeArg.includes('p') || (isPM() && !timeArg.includes('a'))) {
             hour += 12;
             if (hour == 24)
                 hour = 12;
@@ -54,13 +54,13 @@ module.exports.timeParameter = function(timeArg) {
     } else if (/^\d{3}([ap]m?)?$/i.test(timeArg)) {
         digits = timeArg.substring(0, 3);
         hour = Number(digits.substring(0, 1));
-        if (timeArg.includes('p') || isPM())
+        if (timeArg.includes('p') || (isPM() && !timeArg.includes('a')))
             hour += 12;
         minute = Number(digits.substring(1));
     } else if (/^\d{4}([ap]m?)?$/i.test(timeArg)) {
         digits = timeArg.substring(0, 4);
         hour = Number(digits.substring(0, 2));
-        if (timeArg.includes('p') || isPM()) {
+        if (timeArg.includes('p') || (isPM() && !timeArg.includes('a'))) {
             hour += 12;
             if (hour == 24)
                 hour = 12;
@@ -69,13 +69,13 @@ module.exports.timeParameter = function(timeArg) {
     } else if (/^\d:\d{2}([ap]m?)?$/i.test(timeArg)) {
         digits = timeArg.substring(0, 4);
         hour = Number(digits.substring(0, 1));
-        if (timeArg.includes('p') || isPM())
+        if (timeArg.includes('p') || (isPM() && !timeArg.includes('a')))
             hour += 12;
         minute = Number(digits.substring(2));
     } else if (/^\d{2}:\d{2}([ap]m?)?$/i.test(timeArg)) {
         digits = timeArg.substring(0, 5);
         hour = Number(digits.substring(0, 2));
-        if (timeArg.includes('p') || isPM()) {
+        if (timeArg.includes('p') || (isPM() && !timeArg.includes('a'))) {
             hour += 12;
             if (hour == 24)
                 hour = 12;
