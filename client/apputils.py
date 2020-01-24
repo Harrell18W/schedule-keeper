@@ -23,6 +23,9 @@ def time_elapsed(dt1, dt2, travel):
     minutes = (delta.seconds - hours * 3600) // 60
     if travel:
         minutes += 30
+    if minutes > 59:
+        hours += 1
+        minutes %= 60
     hours_float = quarter_round(hours + (minutes / 60))
     if hours:
         return '%d hours, %d minutes (%.2f)' % (hours, minutes, hours_float)

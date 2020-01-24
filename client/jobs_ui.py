@@ -158,7 +158,6 @@ def enter_finished_jobs(main_window):
 
         if checkbox.isChecked():
             for job_id in inserted_ids:
-                print(job_id)
                 main_window.db.delete_finished_clock(job_id)
             refresh_jobs(main_window)
 
