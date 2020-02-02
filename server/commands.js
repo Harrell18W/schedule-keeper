@@ -8,31 +8,41 @@ const time = require('./time');
 
 //TODO redo this
 function argParser(args) {
-    var stripped = args.split(' ');
-    var parsed = [];
-    for (var i of stripped)
-        if (i !== '') parsed.push(i);
-    if (parsed.length === 0)
-        return { time: null, customer: null };
-    if (parsed.length > 2) {
-        var customer = '';
-        for (var x = 1; x < parsed.length; x++) {
-            customer += parsed[x];
-            if (x < parsed.length - 1)
-                customer += ' ';
+    var timeRe = /^\d{1,2}:?\d{2}(am|a|pm|p)?$/i;
+    var dateRe = /^\d{1,2}\/\d{1,2}(\/\d{2})?$/;
+    var customerRe = /^[A-z]\w*$/;
+
+    var split = args.split(' ');
+    switch(split.length) {
+    case 0:
+        return { time: null, date: null, customer: null };
+    case 1:
+        if (timeRe.test(split[0])) {
+            return { time: split[0], date: null, customer: null };
         }
-        parsed[1] = customer;
+        if (dateRe.test(split[0])) {
+            return { time: null, date: split[0], customer: null };
+        }
+        return { time: null, date: null, customer: split[0] };
+    default:
+        var time = null;
+        var date = null;
+        var customer = null;
+        for (var s of split) {
+            if (timeRe.test(s)) {
+                time = s;
+            } else if (dateRe.test(s)) {
+                date = s;
+            } else if (customerRe.test(s)) {
+                if (customer === null) {
+                    customer = s;
+                } else {
+                    customer += ' ' + s;
+                }
+            }
+        }
+        return { time, date, customer };
     }
-    if (/\d+[amp]{0,2}$/.test(args[0])) {
-        return {
-            time: parsed[0],
-            customer: parsed.length > 1 ? parsed[1] : null
-        };
-    }
-    return {
-        time: null,
-        customer: parsed[0]
-    };
 }
 
 function timeParser(say, timeArg, slackUserId) {
@@ -40,8 +50,21 @@ function timeParser(say, timeArg, slackUserId) {
         return time.timeParameter(timeArg);
     } catch (err) {
         if (err instanceof errors.ValueError) {
-            say(`<@${slackUserId}> Unable to parse timestamp`);
+            say(`<@${slackUserId}> Unable to parse timestamp: ${timeArg}`);
             return { hour: null, minute: null };
+        } else {
+            throw err;
+        }
+    }
+}
+
+function dateParser(say, dateArg, slackUserId) {
+    try {
+        return time.dateParameter(dateArg);
+    } catch (err) {
+        if (err instanceof errors.ValueError) {
+            say(`<@${slackUserId}> Unable to parse datestamp: ${dateArg}`);
+            return null;
         } else {
             throw err;
         }
@@ -59,6 +82,12 @@ module.exports.clockinResponse = async function({ command, ack, say }) {
         var { hour, minute } = timeParser(say, args.time, command.user_id);
         if (!hour && hour !== 0) return;
         start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+    }
+    if (args.date) {
+        var parsedDate = dateParser(say, args.date, command.user_id);
+        if (parsedDate === null) return;
+        start = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate(),
+            start.getHours(), start.getMinutes(), 0, 0);
     }
     if (args.customer) {
         apputils.clockin(say, command.user_id, args.customer, start, false, id);
@@ -100,6 +129,13 @@ module.exports.clockinTravelResponse = async function({ command, ack, say }) {
         if (!hour && hour !== 0) return;
         start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
     }
+    if (args.date) {
+        var parsedDate = dateParser(say, args.date, command.user_id);
+        console.log(parsedDate);
+        if (parsedDate === null) return;
+        start = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate(),
+            start.getHours(), start.getMinutes(), 0, 0);
+    }
     if (args.customer) {
         apputils.clockin(say, command.user_id, args.customer, start, true, id);
         return;
@@ -138,6 +174,13 @@ module.exports.clockoutResponse = async function({ command, ack, say }) {
         var { hour, minute } = timeParser(say, args.time, command.user_id);
         if (!hour && hour !== 0) return;
         finished = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+    }
+    if (args.date) {
+        var parsedDate = dateParser(say, args.date, command.user_id);
+        console.log(parsedDate);
+        if (parsedDate === null) return;
+        finished = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate(),
+            finished.getHours(), finished.getMinutes(), 0, 0);
     }
     var employeeId;
     var customer;

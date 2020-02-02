@@ -1,8 +1,9 @@
 const errors = require('./errors');
 
+// this looks like it does nothing, but leave it in case the offset comes back
 function currentTime() {
     var dUTC = new Date();
-    var milliseconds = dUTC.getTime() - 18000000;
+    var milliseconds = dUTC.getTime();
     return new Date(milliseconds);
 }
 
@@ -98,11 +99,15 @@ module.exports.timeParameter = function(timeArg) {
     };
 };
 
-module.exports.dateParameter = function(date) {
-    var match = /(\d{1,2})\/(\d{1,2})\/?(\d{2})?/.exec(date);
+module.exports.dateParameter = function(dateParam) {
+    var match = /(\d{1,2})\/(\d{1,2})\/?(\d{2})?/.exec(dateParam);
     var month = parseInt(match[1]) - 1;
     var date = parseInt(match[2]);
     var year = match[3] != undefined ? parseInt('20' + match[3]) : undefined;
+    
+    if (month > 12 || date > 31) {
+        throw new errors.ValueError(`Invalid time ${dateParam}`);
+    }
 
     if (year == undefined) {
         year = new Date().getFullYear();
