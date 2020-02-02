@@ -97,3 +97,17 @@ module.exports.timeParameter = function(timeArg) {
         minute: minute
     };
 };
+
+module.exports.dateParameter = function(date) {
+    var match = /(\d{1,2})\/(\d{1,2})\/?(\d{2})?/.exec(date);
+    var month = parseInt(match[1]) - 1;
+    var date = parseInt(match[2]);
+    var year = match[3] != undefined ? parseInt('20' + match[3]) : undefined;
+
+    if (year == undefined) {
+        year = new Date().getFullYear();
+    }
+
+    return new Date(year, month, date);
+};
+
