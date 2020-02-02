@@ -16,6 +16,9 @@ module.exports.clockinBlocks = function(slackUserId, id, customers) {
 
     return [
         {
+            'type': 'divider'
+        },
+        {
             'type': 'section',
             'block_id': 'clock_in_mainresponse',
             'text': {
@@ -47,6 +50,9 @@ module.exports.clockinBlocks = function(slackUserId, id, customers) {
                     'action_id': `clockin_request_cancel_${id}`
                 }
             ]
+        },
+        {
+            'type': 'divider'
         }
     ];
 };
@@ -57,6 +63,9 @@ module.exports.clockinReponseBlocks = function(customer, time, travel, id) {
     text += `*Time:* ${time}\n`;
     text += '*Travel:* ' + (travel ? 'Yes' : 'No');
     return [
+        {
+            'type': 'divider'
+        },
         {
             'type': 'section',
             'text': {
@@ -88,6 +97,9 @@ module.exports.clockinReponseBlocks = function(customer, time, travel, id) {
                     'value': id
                 }
             ]
+        },
+        {
+            'type': 'divider'
         }
     ];
 };
@@ -107,6 +119,9 @@ module.exports.clockoutBlocks = function(slackUserId, id, customers) {
     }
 
     return [
+        {
+            'type': 'divider'
+        },
         {
             'type': 'section',
             'block_id': 'clock_out_mainresponse',
@@ -139,12 +154,18 @@ module.exports.clockoutBlocks = function(slackUserId, id, customers) {
                     'action_id': `clockout_request_cancel_${id}`
                 }
             ]
+        },
+        {
+            'type': 'divider'
         }
     ];
 };
 
 module.exports.clockoutResponseBlocks = function(customer, start, end, time, travel, id) {
     return [
+        {
+            'type': 'divider'
+        },
         {
             'type': 'section',
             'text': {
@@ -172,6 +193,9 @@ module.exports.clockoutResponseBlocks = function(customer, start, end, time, tra
                     'value': 'session_clockout'
                 }
             ]
+        },
+        {
+            'type': 'divider'
         }
     ];
 };
@@ -191,6 +215,9 @@ module.exports.nicknameSelectBlocks = function(slackUserId, customers) {
     }
 
     return [
+        {
+            'type': 'divider'
+        },
         {
             'type': 'section',
             'block_id': 'clock_out_mainresponse',
@@ -213,6 +240,9 @@ module.exports.nicknameSelectBlocks = function(slackUserId, customers) {
                     'options': customers_items
                 }
             ]
+        },
+        {
+            'type': 'divider'
         }
     ];
 };
