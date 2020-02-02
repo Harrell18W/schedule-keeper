@@ -18,6 +18,10 @@ Arguments:
     * Explicitly state the time you started working for a customer
     * Can be a time in the future, to say you will start working for a customer
     * See time section for acceptable inputs
+* date (optional)
+    * Explicitly state the date you started working for a customer
+    * Can be a date in the future, to say you will start working for a customer
+    * See date section for acceptable inputs
 * customer (optional)
     * State the customer you are working for
     * If used, you will not be asked to select a customer
@@ -25,9 +29,6 @@ Arguments:
     in the client program
     * Not case sensitive
     * Ex: Apple, APL, apl
-
-Both arguments do not have to be given, but if both are given, they **must** be given
-in the above order.
 
 After selecting a customer (if not given in command), a reply will be sent with 
 two buttons:
@@ -50,6 +51,11 @@ Arguments:
     * Can be a time in the future, but cannot be a time that precedes when you
     started working
     * See time section for acceptable inputs
+* date (optional)
+    * Explicitly state the date you stopped working for a customer
+    * Can be a date in the future, but cannot be a time that precedes when you
+    started working
+    * See date section for acceptable inputs
 * customer (optional)
     * State the customer you are working for
     * If used, you will not be asked to select a customer
@@ -59,7 +65,7 @@ Arguments:
     * Ex: Apple, APL, apl
 
 Using the Clock Out button in the reply of the /clockin command is equivalent to running
-this command with no time argument.
+this command with no arguments.
 
 This will reply with information about your session. There will also be a button to undo
 and delete the logged hours.
@@ -82,3 +88,11 @@ If you do not specify AM or PM, the bot will assume the same 12-hour section as 
 the command was sent.
 Also note that even though 0:00am is technically not a valid time stamp, it will still be
 accepted as being equivalent to 00:00.
+
+## date arguments
+
+Date arguments are simpler. They can be given as:
+
+* 1/31 (year is assumed to be the current year)
+* 1/31/20 (year is explicitly 2020)
+
